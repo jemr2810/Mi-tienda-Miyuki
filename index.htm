@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diseñador Miyuki 2D</title>
+    <title>Diseñador Miyuki 2D - Mi Tienda</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -35,7 +35,7 @@
             width: 100%;
         }
 
-        .controls-panel, .summary-panel {
+        .controls-panel, .summary-panel, .inventory-panel {
             background: var(--panel-bg);
             padding: 15px;
             border-radius: 8px;
@@ -63,9 +63,7 @@
             touch-action: none;
         }
 
-        .form-group {
-            margin-bottom: 12px;
-        }
+        .form-group { margin-bottom: 12px; }
 
         label {
             display: block;
@@ -74,7 +72,7 @@
             font-size: 0.85rem;
         }
 
-        select, input[type="color"], button {
+        select, input[type="text"], input[type="number"], input[type="color"], button {
             width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
@@ -82,15 +80,43 @@
             box-sizing: border-box;
         }
 
-        .color-picker-wrapper {
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            gap: 6px;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 6px;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .color-swatch {
+            width: 100%;
+            height: 38px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid #ccc;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: bold;
+            color: #000;
+            text-shadow: 0 0 2px #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .color-swatch.selected {
+            border-color: #000;
+            transform: scale(1.08);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .btn-group {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             margin-top: 10px;
         }
 
@@ -101,6 +127,7 @@
             border: none;
             cursor: pointer;
             transition: background 0.2s;
+            border-radius: 4px;
         }
 
         button:hover { opacity: 0.9; }
@@ -112,27 +139,26 @@
             font-size: 1rem;
         }
 
+        .tool-active { outline: 2px solid var(--accent); }
+        
         .price-tag {
             font-size: 1.4rem;
             font-weight: bold;
             color: var(--accent);
             margin-top: 10px;
         }
-
-        .tool-active {
-            outline: 2px solid var(--accent);
-        }
     </style>
 </head>
 <body>
 
     <h1>Diseñador Miyuki 2D</h1>
-    <p>Crea tu diseño personalizado paso a paso</p>
+    <p>Crea tu diseño personalizado con nuestro catálogo real</p>
 
     <div class="container">
+        <!-- Panel de Configuración -->
         <div class="controls-panel">
             <div class="form-group">
-                <label for="productSelect">1. Tipo de Producto:</label>
+                <label for="productSelect">1. Producto:</label>
                 <select id="productSelect">
                     <option value="anillo">Anillo (6x50 cuentas)</option>
                     <option value="pulsera" selected>Pulsera (16x100 cuentas)</option>
@@ -149,83 +175,138 @@
             </div>
 
             <div class="form-group">
-                <label>3. Color de Cuenta Miyuki:</label>
-                <div class="color-picker-wrapper">
-                    <input type="color" id="colorPicker" value="#db0010">
-                    <span id="colorHexCode">#DB0010</span>
-                </div>
+                <label>3. Seleccionar Color en Stock:</label>
+                <div class="palette-grid" id="paletteContainer"></div>
+                <small id="selectedColorLabel" style="display:block; margin-top:5px; font-weight:bold; color:#2c3e50;"></small>
             </div>
 
             <div class="btn-group">
                 <button id="btnPencil" class="tool-active">✏️ Lápiz</button>
-                <button id="btnEraser">🧹 Borrador</button>
+                <button id="btnBucket">🪣 Relleno</button>
+                <button id="btnEraser">🧹 Borrar</button>
                 <button id="btnClear">🗑️ Limpiar</button>
             </div>
         </div>
 
+        <!-- Área del Lienzo 2D -->
         <div class="canvas-container">
             <canvas id="miyukiCanvas"></canvas>
         </div>
 
+        <!-- Panel de Resumen y Cotización -->
         <div class="summary-panel">
             <h3>Resumen del Pedido</h3>
-            <p>Total Cuentas Utilizadas: <strong id="totalBeads">0</strong></p>
+            <p>Total Cuentas: <strong id="totalBeads">0</strong></p>
+            <div id="beadBreakdown" style="font-size:0.8rem; max-height:120px; overflow-y:auto; margin-bottom:10px; background:#f9f9f9; padding:5px; border-radius:4px;"></div>
             <hr>
             <label>Costo Estimado:</label>
             <div class="price-tag" id="totalPrice">$0.00</div>
             
             <button class="btn-whatsapp" id="btnSendWhatsapp">📲 Enviar Pedido por WhatsApp</button>
         </div>
+
+        <!-- Panel de Administración (Agregar Nuevos Colores) -->
+        <div class="inventory-panel">
+            <h3>+ Agregar Nuevo Color al Stock</h3>
+            <div class="form-group">
+                <label>Código (ej. DB0010):</label>
+                <input type="text" id="newCode" placeholder="DBXXXX">
+            </div>
+            <div class="form-group">
+                <label>Nombre / Descripción:</label>
+                <input type="text" id="newName" placeholder="Ej. Turquoise Mat">
+            </div>
+            <div class="form-group">
+                <label>Color Visual:</label>
+                <input type="color" id="newHex" value="#333333">
+            </div>
+            <div class="form-group">
+                <label>Costo por Cuenta ($):</label>
+                <input type="number" id="newPrice" step="0.001" value="0.01">
+            </div>
+            <button id="btnAddColor" style="background:#27ae60; padding:10px;">Guardar Color en Catálogo</button>
+            <button id="btnResetPalette" style="background:#e74c3c; padding:6px; margin-top:8px; font-size:0.75rem;">Restablecer Catálogo Original</button>
+        </div>
     </div>
 
     <script>
-        // Configuración de lienzo y estado
         const canvas = document.getElementById('miyukiCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Referencias de UI
-        const productSelect = document.getElementById('productSelect');
-        const techniqueSelect = document.getElementById('techniqueSelect');
-        const colorPicker = document.getElementById('colorPicker');
-        const colorHexCode = document.getElementById('colorHexCode');
-        const btnPencil = document.getElementById('btnPencil');
-        const btnEraser = document.getElementById('btnEraser');
-        const btnClear = document.getElementById('btnClear');
-        const totalBeadsEl = document.getElementById('totalBeads');
-        const totalPriceEl = document.getElementById('totalPrice');
-        const btnSendWhatsapp = document.getElementById('btnSendWhatsapp');
+        // Catálogo Completo Precargado (26 Colores de Facturas 1 y 2)
+        const DEFAULT_PALETTE = [
+            // Delica 11/0 - Factura 1
+            { code: "DB0351", name: "Blanco mate", hex: "#F8F9FA", price: 0.01 },
+            { code: "DB1493-1", name: "Opaque Lt Salmon", hex: "#FFA089", price: 0.01 },
+            { code: "DB0734", name: "Op Chocolate Brown", hex: "#4A2E2B", price: 0.01 },
+            { code: "DB0878", name: "Mat Op Turquoise AB", hex: "#30D5C8", price: 0.01 },
+            { code: "DB0756", name: "Matte Op Cobalt", hex: "#0038A8", price: 0.01 },
+            { code: "DB0310", name: "Jet Black Mate", hex: "#1A1A1A", price: 0.01 },
+            { code: "DB2366-TB", name: "Duracoat Opq Soft", hex: "#E6C280", price: 0.015 },
+            { code: "DB1585", name: "Matte Op Avocado", hex: "#568203", price: 0.01 },
+            // Rocalla 11/0 - Factura 1
+            { code: "11-9401F", name: "Rocalla Mat Black", hex: "#121212", price: 0.008 },
+            { code: "11-92006", name: "Rocalla Mat Mtlc Dk", hex: "#4A4A4A", price: 0.008 },
+            { code: "11-9402", name: "Rocalla Op White", hex: "#FFFFFF", price: 0.008 },
+            { code: "11-9408", name: "Rocalla Op Red", hex: "#D32F2F", price: 0.008 },
+            { code: "11-9404", name: "Rocalla Op Yellow", hex: "#FBC02D", price: 0.008 },
+            { code: "11-9593", name: "Rocalla Dk Beige", hex: "#D7BDE2", price: 0.008 },
+            { code: "11-9457L", name: "Rocalla Met Bronze", hex: "#8C6239", price: 0.009 },
+            // Delica 11/0 - Factura 2
+            { code: "DB0721", name: "Opaque Yellow", hex: "#FFD700", price: 0.01 },
+            { code: "DB0200", name: "Opaque Chalk White", hex: "#FFFFFF", price: 0.01 },
+            { code: "DB1832", name: "Galvanized Gold", hex: "#D4AF37", price: 0.018 },
+            { code: "DB0726", name: "Opaque Dark Blue", hex: "#002366", price: 0.01 },
+            { code: "DB0727", name: "Opaque Light Siam", hex: "#E32636", price: 0.01 },
+            { code: "DB0725", name: "Opaque Light Blue", hex: "#87CEEB", price: 0.01 },
+            // Rocalla 8/0 - Factura 2
+            { code: "8-9404", name: "Rocalla 8/0 Op Yellow", hex: "#FFEE55", price: 0.012 },
+            { code: "8-9402", name: "Rocalla 8/0 Op White", hex: "#FAFAFA", price: 0.012 },
+            { code: "8-9414", name: "Rocalla 8/0 Op Cobalt", hex: "#0047AB", price: 0.012 },
+            { code: "8-9408", name: "Rocalla 8/0 Op Red", hex: "#DC143C", price: 0.012 },
+            { code: "8-9413F", name: "Rocalla 8/0 Mat", hex: "#555555", price: 0.012 }
+        ];
 
-        // Variables globales
-        let cols = 100;
-        let rows = 16;
-        const beadSize = 12; // Tamaño visual de cada cuenta en px
+        let palette = JSON.parse(localStorage.getItem('miyuki_palette')) || DEFAULT_PALETTE;
+        let selectedColor = palette[0];
+        let currentTool = 'pencil';
+        let cols = 100, rows = 16, beadSize = 12;
         let grid = [];
-        let currentTool = 'pencil'; // 'pencil' o 'eraser'
         let isDrawing = false;
 
-        // Configuración de Costos Base (Valores modificables)
-        const COSTS = {
-            beadUnitPrice: 0.01, // Costo promedio por cuenta ($)
-            baseProducts: {
-                anillo: 1.5,   // Herrajes/Base Anillo ($)
-                pulsera: 3.0,  // Cierre/Hilo Pulsera ($)
-                dije: 2.0      // Argolla/Cadena Dije ($)
-            }
-        };
-
+        const COSTS = { baseProducts: { anillo: 1.5, pulsera: 3.0, dije: 2.0 } };
         const PRODUCT_SIZES = {
             anillo: { cols: 50, rows: 6 },
             pulsera: { cols: 100, rows: 16 },
             dije: { cols: 25, rows: 25 }
         };
 
-        // Inicialización
-        function initGrid() {
-            const size = PRODUCT_SIZES[productSelect.value];
-            cols = size.cols;
-            rows = size.rows;
+        function renderPalette() {
+            const container = document.getElementById('paletteContainer');
+            container.innerHTML = '';
+            palette.forEach((item) => {
+                const swatch = document.createElement('div');
+                swatch.className = `color-swatch ${item.code === selectedColor.code ? 'selected' : ''}`;
+                swatch.style.backgroundColor = item.hex;
+                swatch.title = `${item.code} - ${item.name}`;
+                swatch.textContent = item.code.substring(0, 5);
+                swatch.onclick = () => {
+                    selectedColor = item;
+                    document.getElementById('selectedColorLabel').textContent = `Color: ${item.code} - ${item.name}`;
+                    renderPalette();
+                };
+                container.appendChild(swatch);
+            });
+            document.getElementById('selectedColorLabel').textContent = `Color: ${selectedColor.code} - ${selectedColor.name}`;
+        }
 
-            canvas.width = cols * beadSize + (techniqueSelect.value === 'peyote' ? beadSize / 2 : 0);
+        function initGrid() {
+            const product = document.getElementById('productSelect').value;
+            const technique = document.getElementById('techniqueSelect').value;
+            cols = PRODUCT_SIZES[product].cols;
+            rows = PRODUCT_SIZES[product].rows;
+
+            canvas.width = cols * beadSize + (technique === 'peyote' ? beadSize / 2 : 0);
             canvas.height = rows * beadSize;
 
             grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
@@ -233,27 +314,20 @@
             updateCalculations();
         }
 
-        // Renderizado del Canvas 2D
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const isPeyote = techniqueSelect.value === 'peyote';
+            const isPeyote = document.getElementById('techniqueSelect').value === 'peyote';
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    let x = c * beadSize;
+                    let x = c * beadSize + (isPeyote && r % 2 !== 0 ? beadSize / 2 : 0);
                     let y = r * beadSize;
 
-                    // Desplazamiento alternado para técnica Peyote / Brick Stitch
-                    if (isPeyote && r % 2 !== 0) {
-                        x += beadSize / 2;
-                    }
-
-                    // Renderizar celda / cuenta
                     ctx.beginPath();
                     ctx.rect(x, y, beadSize - 1, beadSize - 1);
 
                     if (grid[r][c]) {
-                        ctx.fillStyle = grid[r][c];
+                        ctx.fillStyle = grid[r][c].hex;
                         ctx.fill();
                     } else {
                         ctx.fillStyle = '#f0f0f0';
@@ -265,7 +339,24 @@
             }
         }
 
-        // Interacción Táctil y Mouse
+        function floodFill(r, c, targetColor) {
+            if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+            const currentColor = grid[r][c];
+            if (currentColor === targetColor) return;
+
+            function fill(x, y) {
+                if (x < 0 || x >= rows || y < 0 || y >= cols) return;
+                if (grid[x][y] !== currentColor) return;
+                grid[x][y] = targetColor;
+
+                fill(x + 1, y);
+                fill(x - 1, y);
+                fill(x, y + 1);
+                fill(x, y - 1);
+            }
+            fill(r, c);
+        }
+
         function handleAction(e) {
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -275,18 +366,53 @@
             const y = clientY - rect.top;
 
             let r = Math.floor(y / beadSize);
-            let isPeyote = techniqueSelect.value === 'peyote';
+            let isPeyote = document.getElementById('techniqueSelect').value === 'peyote';
             let offsetX = (isPeyote && r % 2 !== 0) ? beadSize / 2 : 0;
             let c = Math.floor((x - offsetX) / beadSize);
 
             if (r >= 0 && r < rows && c >= 0 && c < cols) {
-                grid[r][c] = currentTool === 'pencil' ? colorPicker.value : null;
+                if (currentTool === 'pencil') {
+                    grid[r][c] = selectedColor;
+                } else if (currentTool === 'eraser') {
+                    grid[r][c] = null;
+                } else if (currentTool === 'bucket') {
+                    floodFill(r, c, selectedColor);
+                }
                 draw();
                 updateCalculations();
             }
         }
 
-        // Eventos de dibujo
+        function updateCalculations() {
+            let counts = {};
+            let totalBeads = 0;
+            let totalPrice = 0;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let bead = grid[r][c];
+                    if (bead) {
+                        totalBeads++;
+                        counts[bead.code] = (counts[bead.code] || 0) + 1;
+                        totalPrice += bead.price;
+                    }
+                }
+            }
+
+            const product = document.getElementById('productSelect').value;
+            totalPrice += COSTS.baseProducts[product] || 0;
+
+            document.getElementById('totalBeads').textContent = totalBeads;
+            document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+
+            let breakdownHTML = '';
+            for (let code in counts) {
+                breakdownHTML += `<div>• <strong>${code}</strong>: ${counts[code]} cuentas</div>`;
+            }
+            document.getElementById('beadBreakdown').innerHTML = breakdownHTML || '<em>Sin cuentas dibujadas</em>';
+        }
+
+        // Eventos de Dibujo
         canvas.addEventListener('mousedown', (e) => { isDrawing = true; handleAction(e); });
         canvas.addEventListener('mousemove', (e) => { if (isDrawing) handleAction(e); });
         window.addEventListener('mouseup', () => isDrawing = false);
@@ -295,65 +421,66 @@
         canvas.addEventListener('touchmove', (e) => { if (isDrawing) handleAction(e); e.preventDefault(); });
         window.addEventListener('touchend', () => isDrawing = false);
 
-        // Actualización de Conteo y Precio
-        function updateCalculations() {
-            let usedBeads = 0;
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    if (grid[r][c]) usedBeads++;
-                }
-            }
+        document.getElementById('productSelect').addEventListener('change', initGrid);
+        document.getElementById('techniqueSelect').addEventListener('change', draw);
 
-            const baseCost = COSTS.baseProducts[productSelect.value] || 0;
-            const total = (usedBeads * COSTS.beadUnitPrice) + baseCost;
+        document.getElementById('btnPencil').onclick = () => setTool('pencil', 'btnPencil');
+        document.getElementById('btnBucket').onclick = () => setTool('bucket', 'btnBucket');
+        document.getElementById('btnEraser').onclick = () => setTool('eraser', 'btnEraser');
+        document.getElementById('btnClear').onclick = () => { grid = Array(rows).fill(null).map(() => Array(cols).fill(null)); draw(); updateCalculations(); };
 
-            totalBeadsEl.textContent = usedBeads;
-            totalPriceEl.textContent = `$${total.toFixed(2)}`;
+        function setTool(tool, btnId) {
+            currentTool = tool;
+            document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('tool-active'));
+            document.getElementById(btnId).classList.add('tool-active');
         }
 
-        // Eventos de interfaz
-        productSelect.addEventListener('change', initGrid);
-        techniqueSelect.addEventListener('change', draw);
-        colorPicker.addEventListener('input', (e) => colorHexCode.textContent = e.target.value.toUpperCase());
+        // Guardar Nuevo Color
+        document.getElementById('btnAddColor').onclick = () => {
+            const code = document.getElementById('newCode').value.trim();
+            const name = document.getElementById('newName').value.trim();
+            const hex = document.getElementById('newHex').value;
+            const price = parseFloat(document.getElementById('newPrice').value);
 
-        btnPencil.addEventListener('click', () => {
-            currentTool = 'pencil';
-            btnPencil.classList.add('tool-active');
-            btnEraser.classList.remove('tool-active');
-        });
+            if (code && name && !isNaN(price)) {
+                palette.push({ code, name, hex, price });
+                localStorage.setItem('miyuki_palette', JSON.stringify(palette));
+                renderPalette();
+                alert(`Color ${code} agregado con éxito.`);
+            } else {
+                alert('Por favor complete todos los campos.');
+            }
+        };
 
-        btnEraser.addEventListener('click', () => {
-            currentTool = 'eraser';
-            btnEraser.classList.add('tool-active');
-            btnPencil.classList.remove('tool-active');
-        });
+        // Restablecer catálogo original
+        document.getElementById('btnResetPalette').onclick = () => {
+            if (confirm("¿Deseas restablecer el catálogo a la lista original de 26 colores?")) {
+                palette = DEFAULT_PALETTE;
+                localStorage.setItem('miyuki_palette', JSON.stringify(palette));
+                selectedColor = palette[0];
+                renderPalette();
+            }
+        };
 
-        btnClear.addEventListener('click', () => {
-            grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
-            draw();
-            updateCalculations();
-        });
-
-        // Generación de Pedido por WhatsApp
-        btnSendWhatsapp.addEventListener('click', () => {
-            const product = productSelect.options[productSelect.selectedIndex].text;
-            const technique = techniqueSelect.options[techniqueSelect.selectedIndex].text;
-            const beads = totalBeadsEl.textContent;
-            const price = totalPriceEl.textContent;
+        // WhatsApp
+        document.getElementById('btnSendWhatsapp').onclick = () => {
+            const product = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
+            const technique = document.getElementById('techniqueSelect').options[document.getElementById('techniqueSelect').selectedIndex].text;
+            const beads = document.getElementById('totalBeads').textContent;
+            const price = document.getElementById('totalPrice').textContent;
 
             const text = `¡Hola! Quisiera realizar el siguiente pedido personalizado:%0A%0A` +
                          `📌 *Producto:* ${product}%0A` +
                          `🧵 *Técnica:* ${technique}%0A` +
-                         `🧩 *Total de Cuentas:* ${beads}%0A` +
+                         `🧩 *Total Cuentas:* ${beads}%0A` +
                          `💰 *Precio Estimado:* ${price}%0A%0A` +
-                         `Adjunto la imagen de mi diseño.`;
+                         `Te adjunto el diseño dibujado.`;
 
-            // Número de WhatsApp (reemplazar con el tuyo)
-            const phone = "5491100000000"; 
-            window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${text}`, '_blank');
-        });
+            window.open(`https://api.whatsapp.com/send?phone=5491100000000&text=${text}`, '_blank');
+        };
 
-        // Arrancar la app
+        // Iniciar App
+        renderPalette();
         initGrid();
     </script>
 </body>
