@@ -169,8 +169,9 @@
             <div class="form-group">
                 <label for="techniqueSelect">2. Técnica de Tejido:</label>
                 <select id="techniqueSelect">
-                    <option value="grid">Telar / Cuadrícula Recta</option>
-                    <option value="peyote">Peyote / Brick Stitch (Intercalado)</option>
+                    <option value="loom">Loom Weaving (Telar Recto)</option>
+                    <option value="peyote">Peyote Stitch (Intercalado Horizontal)</option>
+                    <option value="brick">Brick Stitch (Intercalado Vertical)</option>
                 </select>
             </div>
 
@@ -306,8 +307,9 @@
             cols = PRODUCT_SIZES[product].cols;
             rows = PRODUCT_SIZES[product].rows;
 
+            // Ajuste del tamaño del lienzo según la técnica
             canvas.width = cols * beadSize + (technique === 'peyote' ? beadSize / 2 : 0);
-            canvas.height = rows * beadSize;
+            canvas.height = rows * beadSize + (technique === 'brick' ? beadSize / 2 : 0);
 
             grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
             draw();
@@ -316,12 +318,19 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const isPeyote = document.getElementById('techniqueSelect').value === 'peyote';
+            const technique = document.getElementById('techniqueSelect').value;
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    let x = c * beadSize + (isPeyote && r % 2 !== 0 ? beadSize / 2 : 0);
+                    let x = c * beadSize;
                     let y = r * beadSize;
+
+                    // Desplazamientos según la orientación de la técnica
+                    if (technique === 'peyote' && r % 2 !== 0) {
+                        x += beadSize / 2; // Desplazamiento horizontal por filas
+                    } else if (technique === 'brick' && c % 2 !== 0) {
+                        y += beadSize / 2; // Desplazamiento vertical por columnas
+                    }
 
                     ctx.beginPath();
                     ctx.rect(x, y, beadSize - 1, beadSize - 1);
@@ -365,10 +374,22 @@
             const x = clientX - rect.left;
             const y = clientY - rect.top;
 
-            let r = Math.floor(y / beadSize);
-            let isPeyote = document.getElementById('techniqueSelect').value === 'peyote';
-            let offsetX = (isPeyote && r % 2 !== 0) ? beadSize / 2 : 0;
-            let c = Math.floor((x - offsetX) / beadSize);
+            const technique = document.getElementById('techniqueSelect').value;
+            let r, c;
+
+            if (technique === 'brick') {
+                c = Math.floor(x / beadSize);
+                let offsetY = (c % 2 !== 0) ? beadSize / 2 : 0;
+                r = Math.floor((y - offsetY) / beadSize);
+            } else if (technique === 'peyote') {
+                r = Math.floor(y / beadSize);
+                let offsetX = (r % 2 !== 0) ? beadSize / 2 : 0;
+                c = Math.floor((x - offsetX) / beadSize);
+            } else {
+                // Loom (Loom Weaving / Telar)
+                r = Math.floor(y / beadSize);
+                c = Math.floor(x / beadSize);
+            }
 
             if (r >= 0 && r < rows && c >= 0 && c < cols) {
                 if (currentTool === 'pencil') {
@@ -422,7 +443,7 @@
         window.addEventListener('touchend', () => isDrawing = false);
 
         document.getElementById('productSelect').addEventListener('change', initGrid);
-        document.getElementById('techniqueSelect').addEventListener('change', draw);
+        document.getElementById('techniqueSelect').addEventListener('change', () => { initGrid(); draw(); });
 
         document.getElementById('btnPencil').onclick = () => setTool('pencil', 'btnPencil');
         document.getElementById('btnBucket').onclick = () => setTool('bucket', 'btnBucket');
