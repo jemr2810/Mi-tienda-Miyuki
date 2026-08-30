@@ -65,9 +65,9 @@
 
         .app-layout {
             display: grid;
-            grid-template-columns: 310px 1fr 330px;
+            grid-template-columns: 310px 1fr 360px;
             gap: 20px;
-            max-width: 1420px;
+            max-width: 1460px;
             width: 100%;
         }
 
@@ -137,7 +137,6 @@
             box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
         }
 
-        /* Contenedor del Lienzo */
         .viewport-container {
             position: relative;
             background: #2a2520; 
@@ -152,7 +151,6 @@
             padding: 20px;
         }
 
-        /* Badge visual UX de herramienta activa en Canvas */
         .active-tool-badge {
             position: absolute;
             top: 12px;
@@ -269,7 +267,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
             gap: 8px;
-            max-height: 160px;
+            max-height: 140px;
             overflow-y: auto;
             padding: 4px;
         }
@@ -298,7 +296,7 @@
         .price-badge {
             background: linear-gradient(135deg, #fbf7f2 0%, #f4ece1 100%);
             border: 1px solid var(--gold-light);
-            padding: 16px;
+            padding: 14px;
             border-radius: var(--radius-md);
             text-align: center;
             color: var(--text-dark);
@@ -311,7 +309,7 @@
 
         .price-badge .price {
             font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--gold-dark);
             margin-top: 2px;
@@ -321,10 +319,10 @@
             background: var(--gold-primary);
             color: #ffffff;
             border: none;
-            padding: 12px;
+            padding: 10px 12px;
             border-radius: var(--radius-md);
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
             width: 100%;
@@ -349,24 +347,91 @@
             background: #219150;
         }
 
-        .design-item {
+        /* UI Mejorada de Diseños Guardados */
+        .saved-list-container {
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 4px;
+        }
+
+        .design-card {
             background: var(--bg-main);
             border: 1px solid var(--panel-border);
-            padding: 8px 12px;
             border-radius: var(--radius-md);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .design-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
-            margin-bottom: 6px;
         }
 
-        .design-item button {
-            background: transparent;
-            border: none;
-            color: var(--gold-dark);
-            cursor: pointer;
+        .design-title {
             font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--text-dark);
+        }
+
+        .design-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .design-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            border: 1px solid var(--panel-border);
+            background: #ffffff;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .btn-sm:hover {
+            background: var(--accent-soft);
+            border-color: var(--gold-primary);
+        }
+
+        .color-breakdown {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 6px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .color-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-main);
+            border: 1px solid var(--panel-border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        .color-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.2);
         }
 
         @media (max-width: 1024px) {
@@ -383,7 +448,7 @@
     </header>
 
     <div class="app-layout">
-        <!-- Panel Izquierdo: Configuración y Herramientas -->
+        <!-- Panel Izquierdo: Configuración -->
         <div class="panel">
             <h3 class="panel-title">
                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -443,42 +508,28 @@
                 </button>
             </div>
 
-            <!-- Submenú dinámico para copia y transformación -->
             <div class="advanced-actions">
                 <label style="font-size:0.68rem;">Edición y Espejos</label>
                 <div class="tools-grid">
-                    <button id="btnCopy" class="btn-tool" disabled>
-                        <svg class="svg-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                        Copiar
-                    </button>
-                    <button id="btnPaste" class="btn-tool" disabled>
-                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                        Pegar
-                    </button>
-                    <button id="btnMirrorH" class="btn-tool" disabled>
-                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg>
-                        Espejo H
-                    </button>
-                    <button id="btnMirrorV" class="btn-tool" disabled>
-                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="m2 17 4 4 4-4"></path><path d="M11 3h-1a4 4 0 0 0-4 4v14"></path><path d="m22 7-4-4-4 4"></path><path d="M13 21h1a4 4 0 0 0 4-4V3"></path></svg>
-                        Espejo V
-                    </button>
+                    <button id="btnCopy" class="btn-tool" disabled>Copiar</button>
+                    <button id="btnPaste" class="btn-tool" disabled>Pegar</button>
+                    <button id="btnMirrorH" class="btn-tool" disabled>Espejo H</button>
+                    <button id="btnMirrorV" class="btn-tool" disabled>Espejo V</button>
                 </div>
             </div>
 
             <button id="btnClear" class="btn-tool" style="background: #fff0f0; border-color: #ffd1d1; color:#c0392b; justify-content:center;">
-                <svg class="svg-icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                 Limpiar Todo
             </button>
         </div>
 
-        <!-- Panel Central: Lienzo de Trabajo -->
+        <!-- Panel Central: Lienzo -->
         <div class="viewport-container">
             <div id="toolBadge" class="active-tool-badge">HERRAMIENTA: LÁPIZ</div>
             <canvas id="miyukiCanvas"></canvas>
         </div>
 
-        <!-- Panel Derecho: Catálogo, Biblioteca y Cotización -->
+        <!-- Panel Derecho: Catálogo, Biblioteca, Colores e Importación -->
         <div class="panel">
             <h3 class="panel-title">
                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z"></path><path d="M11 3 8 9l3 12"></path><path d="M13 3l3 6-3 12"></path><path d="M2 9h20"></path></svg>
@@ -493,18 +544,26 @@
             <div class="palette-grid" id="paletteContainer"></div>
             <span id="selectedColorLabel" style="font-size:0.75rem; font-weight:600; color:var(--gold-dark);"></span>
 
-            <h3 class="panel-title" style="margin-top: 8px;">
+            <h3 class="panel-title" style="margin-top: 4px;">
                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                 Mis Diseños
             </h3>
+            
             <div class="form-group">
                 <input type="text" id="designName" placeholder="Nombre del diseño...">
             </div>
-            <button id="btnSaveDesign" class="btn-action" style="background: var(--accent-soft); color: var(--text-dark); border: 1px solid var(--panel-border);">
-                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                Guardar Diseño
-            </button>
-            <div id="savedDesignsList" style="max-height: 100px; overflow-y: auto;"></div>
+            
+            <div style="display:flex; gap:6px;">
+                <button id="btnSaveDesign" class="btn-action" style="background: var(--accent-soft); color: var(--text-dark); border: 1px solid var(--panel-border);">
+                    Guardar
+                </button>
+                <button id="btnImportJSON" class="btn-action" style="background: var(--bg-main); color: var(--text-dark); border: 1px solid var(--panel-border);">
+                    Importar
+                </button>
+                <input type="file" id="fileInput" accept=".json" style="display:none;">
+            </div>
+
+            <div id="savedDesignsList" class="saved-list-container"></div>
 
             <div class="price-badge">
                 <label>COTIZACIÓN ESTIMADA</label>
@@ -513,7 +572,6 @@
             </div>
 
             <button class="btn-action btn-whatsapp" id="btnSendWhatsapp">
-                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                 Cotizar por WhatsApp
             </button>
         </div>
@@ -572,41 +630,21 @@
         function setTool(toolName) {
             currentTool = toolName;
             document.querySelectorAll('.tools-grid .btn-tool').forEach(btn => btn.classList.remove('tool-active'));
+            const map = { pencil: 'btnPencil', bucket: 'btnBucket', eraser: 'btnEraser', select: 'btnSelect', paste: 'btnPaste' };
+            if (map[toolName]) document.getElementById(map[toolName])?.classList.add('tool-active');
             
-            const toolButtons = {
-                pencil: 'btnPencil',
-                bucket: 'btnBucket',
-                eraser: 'btnEraser',
-                select: 'btnSelect',
-                paste: 'btnPaste'
-            };
-
-            if (toolButtons[toolName]) {
-                const activeBtn = document.getElementById(toolButtons[toolName]);
-                if (activeBtn) activeBtn.classList.add('tool-active');
-            }
-
-            const toolLabels = {
-                pencil: 'HERRAMIENTA: LÁPIZ',
-                bucket: 'HERRAMIENTA: RELLENO',
-                eraser: 'HERRAMIENTA: BORRADOR',
-                select: 'HERRAMIENTA: SELECCIÓN',
-                paste: 'HERRAMIENTA: PEGAR'
-            };
-            document.getElementById('toolBadge').textContent = toolLabels[toolName] || 'HERRAMIENTA ACTIVA';
+            const labels = { pencil: 'HERRAMIENTA: LÁPIZ', bucket: 'HERRAMIENTA: RELLENO', eraser: 'HERRAMIENTA: BORRADOR', select: 'HERRAMIENTA: SELECCIÓN', paste: 'HERRAMIENTA: PEGAR' };
+            document.getElementById('toolBadge').textContent = labels[toolName] || 'HERRAMIENTA ACTIVA';
         }
 
         function renderPalette() {
             const container = document.getElementById('paletteContainer');
             container.innerHTML = '';
-            
-            const filtered = palette.filter(item => item.type === currentTypeFilter);
-            
-            filtered.forEach((item) => {
+            palette.filter(i => i.type === currentTypeFilter).forEach(item => {
                 const swatch = document.createElement('div');
                 swatch.className = `color-swatch ${item.code === selectedColor.code ? 'selected' : ''}`;
                 swatch.style.backgroundColor = item.hex;
-                swatch.title = `${item.code} - ${item.name} (${item.type.toUpperCase()})`;
+                swatch.title = `${item.code} - ${item.name}`;
                 swatch.onclick = () => {
                     selectedColor = item;
                     document.getElementById('selectedColorLabel').textContent = `${item.code} - ${item.name} [${item.type.toUpperCase()}]`;
@@ -636,7 +674,6 @@
         function getBeadCoords(x, y) {
             const technique = document.getElementById('techniqueSelect').value;
             let r, c;
-
             if (technique === 'brick') {
                 c = Math.floor(x / beadSize);
                 let offsetY = (c % 2 !== 0) ? beadSize / 2 : 0;
@@ -655,19 +692,16 @@
         function draw() {
             ctx.fillStyle = '#eedfcc';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             const technique = document.getElementById('techniqueSelect').value;
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     let x = c * beadSize;
                     let y = r * beadSize;
-
                     if (technique === 'peyote' && r % 2 !== 0) x += beadSize / 2;
                     if (technique === 'brick' && c % 2 !== 0) y += beadSize / 2;
 
                     ctx.beginPath();
-                    
                     const bead = grid[r][c];
                     if (bead && bead.type === 'rocalla') {
                         ctx.arc(x + beadSize/2, y + beadSize/2, (beadSize - 2)/2, 0, Math.PI * 2);
@@ -696,7 +730,6 @@
                 const maxR = Math.max(selectionStart.r, selectionEnd.r);
                 const minC = Math.min(selectionStart.c, selectionEnd.c);
                 const maxC = Math.max(selectionStart.c, selectionEnd.c);
-
                 const x = minC * beadSize;
                 const y = minR * beadSize;
                 const w = (maxC - minC + 1) * beadSize;
@@ -716,16 +749,11 @@
             if (r < 0 || r >= rows || c < 0 || c >= cols) return;
             const currentColor = grid[r][c];
             if (currentColor === targetColor) return;
-
             function fill(x, y) {
                 if (x < 0 || x >= rows || y < 0 || y >= cols) return;
                 if (grid[x][y] !== currentColor) return;
                 grid[x][y] = targetColor;
-
-                fill(x + 1, y);
-                fill(x - 1, y);
-                fill(x, y + 1);
-                fill(x, y - 1);
+                fill(x + 1, y); fill(x - 1, y); fill(x, y + 1); fill(x, y - 1);
             }
             fill(r, c);
         }
@@ -735,7 +763,6 @@
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
             const coords = getBeadCoords(clientX - rect.left, clientY - rect.top);
 
             if (coords.r >= 0 && coords.r < rows && coords.c >= 0 && coords.c < cols) {
@@ -762,17 +789,12 @@
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
             const coords = getBeadCoords(clientX - rect.left, clientY - rect.top);
 
             if (coords.r >= 0 && coords.r < rows && coords.c >= 0 && coords.c < cols) {
-                if (currentTool === 'select') {
-                    selectionEnd = coords;
-                } else if (currentTool === 'pencil') {
-                    grid[coords.r][coords.c] = selectedColor;
-                } else if (currentTool === 'eraser') {
-                    grid[coords.r][coords.c] = null;
-                }
+                if (currentTool === 'select') selectionEnd = coords;
+                else if (currentTool === 'pencil') grid[coords.r][coords.c] = selectedColor;
+                else if (currentTool === 'eraser') grid[coords.r][coords.c] = null;
                 draw();
                 updateCalculations();
             }
@@ -788,9 +810,7 @@
             clipboard = [];
             for (let r = minR; r <= maxR; r++) {
                 let row = [];
-                for (let c = minC; c <= maxC; c++) {
-                    row.push(grid[r][c]);
-                }
+                for (let c = minC; c <= maxC; c++) row.push(grid[r][c]);
                 clipboard.push(row);
             }
             document.getElementById('btnPaste').disabled = false;
@@ -802,15 +822,12 @@
             if (!clipboard) return;
             let clipRows = clipboard.length;
             let clipCols = clipboard[0].length;
-
             for (let r = 0; r < clipRows; r++) {
                 for (let c = 0; c < clipCols; c++) {
                     let sourceR = mirrorV ? (clipRows - 1 - r) : r;
                     let sourceC = mirrorH ? (clipCols - 1 - c) : c;
-
                     let targetR = startR + r;
                     let targetC = startC + c;
-
                     if (targetR < rows && targetC < cols) {
                         grid[targetR][targetC] = clipboard[sourceR][sourceC];
                     }
@@ -818,51 +835,20 @@
             }
         }
 
-        function applyTemplate(type) {
-            if (type === 'none') return;
-            const midR = Math.floor(rows / 2);
-            const midC = Math.floor(cols / 2);
-
-            grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
-
-            if (type === 'diamond') {
-                const size = Math.min(midR, midC) - 1;
-                for (let i = 0; i <= size; i++) {
-                    if (midR - i >= 0 && midC - i >= 0) grid[midR - i][midC - i] = selectedColor;
-                    if (midR - i >= 0 && midC + i < cols) grid[midR - i][midC + i] = selectedColor;
-                    if (midR + i < rows && midC - i >= 0) grid[midR + i][midC - i] = selectedColor;
-                    if (midR + i < rows && midC + i < cols) grid[midR + i][midC + i] = selectedColor;
-                }
-            } else if (type === 'chevron') {
-                for (let c = 0; c < cols; c++) {
-                    let offset = c % (rows * 2);
-                    let r = offset < rows ? offset : (rows * 2 - offset - 1);
-                    if (r < rows) grid[r][c] = selectedColor;
-                }
-            } else if (type === 'flower') {
-                const radius = Math.min(midR, midC, 6);
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        let dist = Math.hypot(r - midR, c - midC);
-                        if (Math.abs(dist - radius) < 1.5 || dist < 1.5) {
-                            grid[r][c] = selectedColor;
+        function calculateDesignBeadUsage(gridData) {
+            const counts = {};
+            gridData.forEach(row => {
+                row.forEach(bead => {
+                    if (bead) {
+                        const key = bead.code;
+                        if (!counts[key]) {
+                            counts[key] = { code: bead.code, name: bead.name, hex: bead.hex, count: 0 };
                         }
+                        counts[key].count++;
                     }
-                }
-            } else if (type === 'heart') {
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        let x = (c - midC) / (cols / 4);
-                        let y = -(r - midR) / (rows / 4);
-                        let formula = Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y;
-                        if (formula <= 0) {
-                            grid[r][c] = selectedColor;
-                        }
-                    }
-                }
-            }
-            draw();
-            updateCalculations();
+                });
+            });
+            return Object.values(counts);
         }
 
         function updateCalculations() {
@@ -889,15 +875,16 @@
 
         function saveCurrentDesign() {
             const nameInput = document.getElementById('designName');
-            const name = nameInput.value.trim() || `Diseño ${new Date().toLocaleTimeString()}`;
+            const name = nameInput.value.trim() || `Diseño ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
             
             const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
             saved.push({
+                id: Date.now(),
                 name,
                 product: document.getElementById('productSelect').value,
                 technique: document.getElementById('techniqueSelect').value,
                 grid,
-                date: new Date().toISOString()
+                date: new Date().toLocaleDateString()
             });
             localStorage.setItem('miyuki_saved_designs', JSON.stringify(saved));
             nameInput.value = '';
@@ -909,14 +896,40 @@
             const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
             listContainer.innerHTML = '';
 
+            if (saved.length === 0) {
+                listContainer.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); text-align:center; padding:10px;">No hay diseños guardados</div>`;
+                return;
+            }
+
             saved.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'design-item';
-                div.innerHTML = `
-                    <span><strong>${item.name}</strong> (${item.product})</span>
-                    <button onclick="loadDesign(${index})">Cargar</button>
+                const colorUsage = calculateDesignBeadUsage(item.grid);
+                const card = document.createElement('div');
+                card.className = 'design-card';
+
+                let colorTagsHTML = colorUsage.map(c => `
+                    <div class="color-tag" title="${c.name}">
+                        <div class="color-dot" style="background-color: ${c.hex}"></div>
+                        <span>${c.code}: <strong>${c.count}</strong></span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="design-card-header">
+                        <div>
+                            <div class="design-title">${item.name}</div>
+                            <div class="design-meta">${item.product.toUpperCase()} • ${item.technique}</div>
+                        </div>
+                        <div class="design-actions">
+                            <button class="btn-sm" onclick="loadDesign(${index})">Cargar</button>
+                            <button class="btn-sm" onclick="exportDesign(${index})">Exportar</button>
+                            <button class="btn-sm" style="color:#c0392b" onclick="deleteDesign(${index})">✕</button>
+                        </div>
+                    </div>
+                    <div class="color-breakdown">
+                        ${colorTagsHTML.length > 0 ? colorTagsHTML : '<span style="font-size:0.65rem; color:var(--text-muted);">Sin cuentas</span>'}
+                    </div>
                 `;
-                listContainer.appendChild(div);
+                listContainer.appendChild(card);
             });
         }
 
@@ -940,34 +953,64 @@
             updateCalculations();
         };
 
-        // --- Event Listeners & Controles ---
+        window.exportDesign = function(index) {
+            const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
+            const design = saved[index];
+            if (!design) return;
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(design, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `${design.name.replace(/\s+/g, '_')}_miyuki.json`);
+            dlAnchorElem.click();
+        };
+
+        window.deleteDesign = function(index) {
+            let saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
+            saved.splice(index, 1);
+            localStorage.setItem('miyuki_saved_designs', JSON.stringify(saved));
+            renderSavedDesignsList();
+        };
+
+        // Importar Archivo JSON
+        document.getElementById('btnImportJSON').onclick = () => document.getElementById('fileInput').click();
+
+        document.getElementById('fileInput').onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedDesign = JSON.parse(event.target.result);
+                    if (!importedDesign.grid || !importedDesign.product) {
+                        alert("El archivo subido no tiene un formato de diseño válido.");
+                        return;
+                    }
+                    const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
+                    importedDesign.name = `${importedDesign.name || 'Importado'} (Imp)`;
+                    saved.push(importedDesign);
+                    localStorage.setItem('miyuki_saved_designs', JSON.stringify(saved));
+                    renderSavedDesignsList();
+                } catch (err) {
+                    alert("Error al leer el archivo JSON.");
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        // Handlers Interfaz
         document.getElementById('btnPencil').onclick = () => setTool('pencil');
         document.getElementById('btnBucket').onclick = () => setTool('bucket');
         document.getElementById('btnEraser').onclick = () => setTool('eraser');
         document.getElementById('btnSelect').onclick = () => setTool('select');
-
         document.getElementById('btnCopy').onclick = copySelectedArea;
         document.getElementById('btnPaste').onclick = () => setTool('paste');
-
-        document.getElementById('btnMirrorH').onclick = () => {
-            mirrorH = !mirrorH;
-            document.getElementById('btnMirrorH').classList.toggle('mirror-active', mirrorH);
-        };
-
-        document.getElementById('btnMirrorV').onclick = () => {
-            mirrorV = !mirrorV;
-            document.getElementById('btnMirrorV').classList.toggle('mirror-active', mirrorV);
-        };
-
-        document.getElementById('btnClear').onclick = () => {
-            if (confirm("¿Estás seguro de que deseas borrar todo el lienzo?")) {
-                initGrid();
-            }
-        };
-
+        document.getElementById('btnMirrorH').onclick = () => { mirrorH = !mirrorH; document.getElementById('btnMirrorH').classList.toggle('mirror-active', mirrorH); };
+        document.getElementById('btnMirrorV').onclick = () => { mirrorV = !mirrorV; document.getElementById('btnMirrorV').classList.toggle('mirror-active', mirrorV); };
+        document.getElementById('btnClear').onclick = () => { if (confirm("¿Borrar lienzo completo?")) initGrid(); };
         document.getElementById('productSelect').onchange = initGrid;
         document.getElementById('techniqueSelect').onchange = initGrid;
-        document.getElementById('templateSelect').onchange = (e) => applyTemplate(e.target.value);
 
         document.getElementById('tabDelica').onclick = () => {
             currentTypeFilter = 'delica';
@@ -987,50 +1030,10 @@
 
         document.getElementById('btnSaveDesign').onclick = saveCurrentDesign;
 
-        document.getElementById('btnSendWhatsapp').onclick = () => {
-            const product = document.getElementById('productSelect').value.toUpperCase();
-            const beads = document.getElementById('totalBeads').textContent;
-            const price = document.getElementById('totalPrice').textContent;
-            
-            const message = `Hola CINQUE Studio! 👋 Quisiera solicitar la cotización de mi diseño:%0A` +
-                            `• *Producto:* ${product}%0A` +
-                            `• *Total Cuentas:* ${beads}%0A` +
-                            `• *Precio Estimado:* ${price}`;
-            
-            window.open(`https://wa.me/?text=${message}`, '_blank');
-        };
-
-        // Eventos táctiles y de ratón
         canvas.addEventListener('mousedown', handlePointerDown);
         canvas.addEventListener('mousemove', handlePointerMove);
         window.addEventListener('mouseup', () => isDrawing = false);
 
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            handlePointerDown(e);
-        }, { passive: false });
-
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            handlePointerMove(e);
-        }, { passive: false });
-
-        window.addEventListener('touchend', () => isDrawing = false);
-
-        // Atajos de teclado para UX fluida
-        window.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-            
-            const key = e.key.toLowerCase();
-            if (key === 'b') setTool('pencil');
-            if (key === 'g') setTool('bucket');
-            if (key === 'e') setTool('eraser');
-            if (key === 's') setTool('select');
-            if (e.ctrlKey && key === 'c') copySelectedArea();
-            if (e.ctrlKey && key === 'v' && clipboard) setTool('paste');
-        });
-
-        // Inicialización de la App
         renderPalette();
         initGrid();
         renderSavedDesignsList();
