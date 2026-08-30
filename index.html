@@ -3,224 +3,404 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CINQUE Studio - Diseñador de Miyuki</title>
+  <title>CINQUE Studio - Diseñador Miyuki Profesional</title>
+  <!-- Tipografía Moderna: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      /* Paleta Corporativa Extraída del Logo CINQUE */
-      --primary-color: #222222;
-      --gold-color: #C8A870;
-      --gold-hover: #A8874E;
-      --bg-light: #F8F4EE;
-      --panel-bg: #FFFFFF;
-      --border-color: #E2D9CD;
-      --danger-color: #D9534F;
-      --accent-soft: #F2EBE1;
+      /* Paleta Premium CINQUE */
+      --bg-main: #121212;
+      --bg-card: rgba(26, 26, 26, 0.85);
+      --bg-card-hover: #222222;
+      --accent-gold: #D4AF37;
+      --gold-gradient: linear-gradient(135deg, #E6C665 0%, #B8860B 100%);
+      --gold-soft: rgba(212, 175, 55, 0.15);
+      --gold-border: rgba(212, 175, 55, 0.3);
+      --text-primary: #F5F5F7;
+      --text-muted: #A1A1A6;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --danger-color: #FF453A;
+      --danger-soft: rgba(255, 69, 58, 0.15);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
 
     body {
-      background-color: var(--bg-light);
-      color: var(--primary-color);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(212, 175, 55, 0.03) 0%, transparent 40%);
     }
 
+    /* Header Elevado */
     header {
-      background: var(--primary-color);
-      color: #fff;
-      padding: 14px 24px;
+      background: rgba(18, 18, 18, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--gold-color);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    header h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: 1px; color: var(--gold-color); }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-badge {
+      width: 32px;
+      height: 32px;
+      background: var(--gold-gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 800;
+      font-size: 1.1rem;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
     /* Layout Principal */
     .app-container {
       display: grid;
-      grid-template-columns: 310px 1fr 310px;
-      gap: 16px;
-      padding: 16px;
+      grid-template-columns: 320px 1fr 320px;
+      gap: 20px;
+      padding: 20px;
       flex: 1;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
       .app-container { grid-template-columns: 1fr; }
     }
 
+    /* Tarjetas de Cristal Glassmorphism */
     .panel {
-      background: var(--panel-bg);
-      border-radius: 10px;
-      padding: 18px;
-      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      gap: 18px;
+      box-shadow: var(--shadow-glow);
     }
 
-    .panel h3 {
-      font-size: 1.05rem;
-      border-bottom: 2px solid var(--accent-soft);
-      padding-bottom: 8px;
-      color: var(--primary-color);
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
     }
 
-    /* Botones e Iconos */
+    .panel-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* UI Controles */
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    select {
+      width: 100%;
+      background: #181818;
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    select:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px var(--gold-soft);
+    }
+
+    /* Botones Vanguardistas */
     button {
       cursor: pointer;
       border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
       font-weight: 600;
-      font-size: 0.85rem;
-      transition: all 0.2s;
+      font-size: 0.8rem;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
+      outline: none;
     }
 
-    .btn-gold { background: var(--gold-color); color: #fff; }
-    .btn-gold:hover { background: var(--gold-hover); }
-    .btn-secondary { background: var(--accent-soft); color: var(--primary-color); border: 1px solid var(--border-color); }
-    .btn-secondary:hover { background: var(--border-color); }
-    .btn-secondary.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
-    .btn-danger-outline { background: transparent; border: 1px solid var(--danger-color); color: var(--danger-color); }
-    .btn-danger-outline:hover { background: var(--danger-color); color: #fff; }
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-gold {
+      background: var(--gold-gradient);
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary.active {
+      background: var(--gold-soft);
+      color: var(--accent-gold);
+      border-color: var(--gold-border);
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      border: 1px solid var(--danger-color);
+      color: var(--danger-color);
+    }
+
+    .btn-danger-outline:hover {
+      background: var(--danger-soft);
+    }
+
+    button:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
 
     .icon-svg { width: 16px; height: 16px; fill: currentColor; }
 
-    /* Grid de herramientas */
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 6px;
-    }
+    /* Grillas de Herramientas */
+    .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 
-    .action-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    /* Selector de Catálogo / Pestañas */
+    /* Catálogo y Pestañas Minimalistas */
     .tab-container {
       display: flex;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 8px;
+      background: #181818;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
     }
 
     .tab-btn {
       flex: 1;
-      background: none;
+      background: transparent;
       border: none;
       padding: 8px;
-      border-bottom: 2px solid transparent;
-      border-radius: 0;
-      color: #666;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.75rem;
     }
 
     .tab-btn.active {
-      border-bottom-color: var(--gold-color);
-      color: var(--primary-color);
-      font-weight: bold;
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      font-weight: 700;
     }
 
     .palette-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      max-height: 160px;
+      gap: 8px;
+      max-height: 180px;
       overflow-y: auto;
-      padding: 4px;
+      padding-right: 4px;
+    }
+
+    .palette-grid::-webkit-scrollbar, .table-wrapper::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .palette-grid::-webkit-scrollbar-thumb, .table-wrapper::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 4px;
     }
 
     .palette-item {
       aspect-ratio: 1;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       border: 2px solid transparent;
+      transition: all 0.2s;
       position: relative;
-      box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
     }
 
     .palette-item.active {
-      border-color: var(--primary-color);
-      transform: scale(1.08);
+      border-color: #FFFFFF;
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
     }
 
-    /* Canvas Contenedor con Escala */
+    /* Área de Trabajo / Canvas */
     .canvas-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: var(--panel-bg);
-      border-radius: 10px;
-      padding: 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 1px solid var(--border-subtle);
+      position: relative;
       overflow: auto;
-      border: 1px solid var(--border-color);
     }
 
     .ruler-wrapper {
       display: grid;
       grid-template-columns: 30px 1fr;
       grid-template-rows: 24px 1fr;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
     }
 
-    .ruler-corner { background: var(--accent-soft); border: 1px solid var(--border-color); }
+    .ruler-corner { background: #181818; border-right: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
     
     .ruler-x {
       display: flex;
-      background: var(--accent-soft);
-      border: 1px solid var(--border-color);
-      border-left: none;
+      background: #181818;
+      border-bottom: 1px solid var(--border-subtle);
       overflow: hidden;
     }
 
     .ruler-y {
       display: flex;
       flex-direction: column;
-      background: var(--accent-soft);
-      border: 1px solid var(--border-color);
-      border-top: none;
+      background: #181818;
+      border-right: 1px solid var(--border-subtle);
       overflow: hidden;
     }
 
     .ruler-cell {
       font-size: 0.65rem;
-      color: #666;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-sizing: border-box;
       font-weight: 600;
     }
 
     canvas {
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      background: #1E1E1E;
       cursor: crosshair;
       touch-action: none;
-      border: 1px solid var(--border-color);
-      border-top: none;
-      border-left: none;
     }
 
-    /* Modales */
+    /* Tarjetas de Resumen */
+    .summary-card {
+      background: var(--gold-soft);
+      border: 1px solid var(--gold-border);
+      padding: 14px;
+      border-radius: var(--radius-md);
+    }
+
+    .summary-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .summary-card span {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .table-wrapper {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .color-breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .color-breakdown-table th {
+      background: #181818;
+      color: var(--text-muted);
+      padding: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+
+    .color-breakdown-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    .color-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Modales Rediseñados */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(3px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
       z-index: 1000;
       opacity: 0; pointer-events: none;
@@ -230,30 +410,38 @@
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
     .modal-container {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 24px;
+      background: #181818;
+      border-radius: var(--radius-lg);
+      padding: 28px;
       max-height: 90vh;
       display: flex; flex-direction: column;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-glow);
+      border: 1px solid var(--border-subtle);
     }
 
-    .modal-lg { width: 90%; max-width: 920px; }
-    .modal-md { width: 90%; max-width: 700px; }
+    .modal-lg { width: 90%; max-width: 900px; }
+    .modal-md { width: 90%; max-width: 650px; }
 
     .modal-header {
       display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px; margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 16px; margin-bottom: 20px;
     }
 
-    .btn-close { background: none; font-size: 1.5rem; color: #888; border: none; cursor: pointer; }
-    .btn-close:hover { color: #000; }
+    .modal-header h3 { font-size: 1.1rem; color: var(--text-primary); }
+
+    .btn-close {
+      background: transparent;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      padding: 4px;
+    }
+
+    .btn-close:hover { color: var(--text-primary); }
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 16px;
       overflow-y: auto;
       max-height: 55vh;
@@ -261,63 +449,62 @@
     }
 
     .design-card {
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
       padding: 12px;
       cursor: pointer;
-      background: #fafafa;
-      transition: transform 0.2s, box-shadow 0.2s;
+      background: var(--bg-card);
+      transition: all 0.2s ease;
     }
 
     .design-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-      border-color: var(--gold-color);
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
     }
 
     .card-thumbnail {
       width: 100%; height: 120px;
-      background: #fff;
-      border-radius: 4px;
+      background: #111;
+      border-radius: var(--radius-sm);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 8px;
-      border: 1px solid #eee;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-subtle);
     }
 
     .modal-body-split {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-
-    @media (max-width: 768px) {
-      .modal-body-split { grid-template-columns: 1fr; }
-    }
-
-    .table-wrapper { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; }
-    .color-breakdown-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .color-breakdown-table th, .color-breakdown-table td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
-    .color-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>CINQUE STUDIO • Designer</h1>
+    <div class="brand-title">
+      <div class="brand-logo-badge">C</div>
+      <h1>Cinque Studio <span style="font-weight: 300; opacity: 0.5;">| Miyuki Designer</span></h1>
+    </div>
     <button id="btnOpenGallery" class="btn-gold">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
-      Mis Diseños / Importar
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5-7l-3 3.72L9 13l-3 4h12l-4-5z"/></svg>
+      Mis Proyectos
     </button>
   </header>
 
   <main class="app-container">
     <!-- Panel Izquierdo: Herramientas -->
     <section class="panel">
-      <h3>Herramientas</h3>
+      <div class="panel-header">
+        <h3>
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          Herramientas
+        </h3>
+      </div>
+
       <div>
-        <label style="font-size:0.8rem; font-weight:600;">Producto:</label>
-        <select id="productSelect" style="width: 100%; padding: 8px; margin-top: 4px; border-radius:6px; border:1px solid var(--border-color);">
+        <label>Tipo de Pieza</label>
+        <select id="productSelect">
           <option value="pulsera">Pulsera Miyuki</option>
           <option value="anillo">Anillo</option>
           <option value="aretes">Aretes / Pendientes</option>
@@ -325,55 +512,76 @@
       </div>
 
       <div>
-        <label style="font-size:0.8rem; font-weight:600;">Modo Edición:</label>
+        <label>Modo Edición</label>
         <div class="tool-grid">
           <button id="toolPencil" class="btn-secondary active" onclick="setTool('pencil')">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>
             Pincel
           </button>
           <button id="toolBucket" class="btn-secondary" onclick="setTool('bucket')">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10l4.5-4.5 4.5 4.5H5.21z"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12z"/></svg>
             Balde
           </button>
           <button id="toolEraser" class="btn-secondary" onclick="setTool('eraser')">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.78-.78 2.05 0 2.83L6.44 21.4c.39.39.9.59 1.41.59H19v-2h-5.56l7.13-7.13c.78-.78.78-2.05 0-2.83l-5.58-5.58c-.39-.39-.9-.59-1.42-.59zm-2.12 4.24l3.54 3.53-7.07 7.07-3.54-3.53 7.07-7.07z"/></svg>
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.78-.78 2.05 0 2.83L6.44 21.4c.39.39.9.59 1.41.59H19v-2h-5.56l7.13-7.13c.78-.78.78-2.05 0-2.83l-5.58-5.58c-.39-.39-.9-.59-1.42-.59z"/></svg>
             Borrar
           </button>
         </div>
       </div>
 
       <div>
-        <label style="font-size:0.8rem; font-weight:600;">Acciones de Patrón:</label>
+        <label>Operaciones de Patrón</label>
         <div class="action-grid">
-          <button class="btn-secondary" onclick="mirrorGrid('horizontal')">↔️ Espejo H</button>
-          <button class="btn-secondary" onclick="mirrorGrid('vertical')">↕️ Espejo V</button>
-          <button class="btn-secondary" onclick="copyPattern()">📋 Copiar</button>
-          <button class="btn-secondary" onclick="pastePattern()">📥 Pegar</button>
+          <button class="btn-secondary" onclick="mirrorGrid('horizontal')">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+            Espejo H
+          </button>
+          <button class="btn-secondary" onclick="mirrorGrid('vertical')">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/></svg>
+            Espejo V
+          </button>
+          <button class="btn-secondary" onclick="copyPattern()">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Copiar
+          </button>
+          <button class="btn-secondary" onclick="pastePattern()">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+            Pegar
+          </button>
         </div>
       </div>
 
       <div>
-        <label style="font-size:0.8rem; font-weight:600;">Historial:</label>
+        <label>Historial</label>
         <div class="action-grid">
-          <button id="btnUndo" class="btn-secondary" onclick="undo()" disabled>↩️ Deshacer</button>
-          <button id="btnRedo" class="btn-secondary" onclick="redo()" disabled>↪️ Rehacer</button>
+          <button id="btnUndo" class="btn-secondary" onclick="undo()" disabled>
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+            Deshacer
+          </button>
+          <button id="btnRedo" class="btn-secondary" onclick="redo()" disabled>
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+            Rehacer
+          </button>
         </div>
       </div>
 
       <div>
-        <label style="font-size:0.8rem; font-weight:600;">Catálogo Miyuki:</label>
-        <div class="tab-container">
+        <label>Catálogo Miyuki Oficial</label>
+        <div class="tab-container" style="margin-bottom:10px;">
           <button id="tabDelica" class="tab-btn active" onclick="switchCatalog('delica')">Delica 11/0</button>
           <button id="tabRocalla" class="tab-btn" onclick="switchCatalog('rocalla')">Rocalla</button>
         </div>
         <div id="paletteContainer" class="palette-grid"></div>
-        <div id="lblSelectedColor" style="font-size: 0.75rem; color:#666; margin-top:4px; font-weight:600;"></div>
+        <div id="lblSelectedColor" style="font-size: 0.75rem; color:var(--text-muted); margin-top:8px; font-weight:600;"></div>
       </div>
 
-      <button onclick="saveCurrentDesign()" class="btn-gold" style="margin-top: auto;">💾 Guardar Proyecto</button>
+      <button onclick="saveCurrentDesign()" class="btn-gold" style="margin-top: auto;">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+        Guardar Proyecto
+      </button>
     </section>
 
-    <!-- Centro: Canvas de Edición con Escalas Dinámicas -->
+    <!-- Centro: Canvas de Edición -->
     <section class="canvas-container">
       <div class="ruler-wrapper">
         <div class="ruler-corner"></div>
@@ -383,16 +591,22 @@
       </div>
     </section>
 
-    <!-- Panel Derecho: Costos e Insumos en Vivo -->
+    <!-- Panel Derecho: Resumen e Insumos -->
     <section class="panel">
-      <h3>Resumen en Tiempo Real</h3>
-      <div style="background: var(--accent-soft); padding: 12px; border-radius: 8px;">
-        <p style="font-size: 0.9rem;"><strong>Cuentas Usadas:</strong> <span id="lblTotalBeads">0</span></p>
-        <p style="font-size: 0.9rem; margin-top:4px;"><strong>Costo Insumos Est.:</strong> $<span id="lblEstimatedCost">0.00</span></p>
+      <div class="panel-header">
+        <h3>
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          Métricas
+        </h3>
+      </div>
+
+      <div class="summary-card">
+        <p>Cuentas Usadas: <span id="lblTotalBeads">0</span></p>
+        <p style="margin-top:6px;">Costo Insumos Est.: <span id="lblEstimatedCost">$0.00</span></p>
       </div>
 
       <div style="flex:1;">
-        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">Conteo Por Color / Código</h4>
+        <label>Desglose por Código</label>
         <div class="table-wrapper">
           <table class="color-breakdown-table">
             <thead>
@@ -409,13 +623,13 @@
   <div id="modalGallery" class="modal-overlay">
     <div class="modal-container modal-lg">
       <div class="modal-header">
-        <h3>🎨 Mis Diseños y Proyectos</h3>
+        <h3>Mis Diseños</h3>
         <button class="btn-close" onclick="closeModal('modalGallery')">&times;</button>
       </div>
 
-      <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+      <div style="display: flex; gap: 12px; margin-bottom: 20px;">
         <button onclick="createNewDesign()" class="btn-secondary">+ Nuevo Lienzo</button>
-        <button id="btnImportFile" class="btn-gold">📥 Importar JSON</button>
+        <button id="btnImportFile" class="btn-gold">Importar JSON</button>
         <input type="file" id="fileInputJSON" accept=".json" style="display:none;">
       </div>
 
@@ -432,13 +646,13 @@
       </div>
 
       <div class="modal-body-split">
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f9f9f9; padding:12px; border-radius:8px;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#111; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
           <div id="detailCanvasContainer"></div>
         </div>
 
         <div>
-          <h4>📦 Lista de Insumos</h4>
-          <div class="table-wrapper" style="margin-top:8px;">
+          <label>Insumos Requeridos</label>
+          <div class="table-wrapper">
             <table class="color-breakdown-table">
               <thead>
                 <tr><th>Color</th><th>Código</th><th style="text-align:right;">Piezas</th></tr>
@@ -449,51 +663,48 @@
         </div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
         <button id="btnDeleteDesign" class="btn-danger-outline" onclick="deleteSelectedDesign()">Eliminar</button>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:10px;">
           <button class="btn-secondary" onclick="exportSelectedJSON()">Exportar JSON</button>
-          <button class="btn-gold" onclick="loadSelectedToCanvas()">🚀 Cargar en Lienzo</button>
+          <button class="btn-gold" onclick="loadSelectedToCanvas()">Cargar en Lienzo</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // --- CATALOGO MIYUKI OFICIAL EXTRAIDO ---
+    // BASE DE DATOS INSUMOS
     const CATALOG_DELICA = [
       { code: 'DB-0200', name: 'Opaque Chalk White', hex: '#FFFFFF' },
-      { code: 'DB-0310', name: 'Jet Black Mate', hex: '#1A1A1A' },
-      { code: 'DB-0351', name: 'Blanco Mate', hex: '#F0F0F0' },
-      { code: 'DB-0721', name: 'Opaque Yellow', hex: '#FFD166' },
-      { code: 'DB-0725', name: 'Opaque Light Blue', hex: '#4EA8DE' },
-      { code: 'DB-0726', name: 'Opaque Dark Blue', hex: '#0077B6' },
-      { code: 'DB-0727', name: 'Opaque Light Siam', hex: '#E63946' },
-      { code: 'DB-0734', name: 'Op Chocolate Brown', hex: '#5C3D2E' },
-      { code: 'DB-0756', name: 'Matte Opaque Cobalt', hex: '#2B4C7E' },
-      { code: 'DB-0878', name: 'Mat Op Turquoise AB', hex: '#2A9D8F' },
-      { code: 'DB-1493-1', name: 'Opaque Light Salmon', hex: '#F4A261' },
-      { code: 'DB-1585', name: 'Matte Opaque Avocado', hex: '#606C38' },
+      { code: 'DB-0310', name: 'Jet Black Mate', hex: '#1C1C1E' },
+      { code: 'DB-0351', name: 'Blanco Mate', hex: '#E5E5EA' },
+      { code: 'DB-0721', name: 'Opaque Yellow', hex: '#FFCC00' },
+      { code: 'DB-0725', name: 'Opaque Light Blue', hex: '#64D2FF' },
+      { code: 'DB-0726', name: 'Opaque Dark Blue', hex: '#0A84FF' },
+      { code: 'DB-0727', name: 'Opaque Light Siam', hex: '#FF453A' },
+      { code: 'DB-0734', name: 'Op Chocolate Brown', hex: '#633B2A' },
+      { code: 'DB-0756', name: 'Matte Opaque Cobalt', hex: '#114B79' },
+      { code: 'DB-0878', name: 'Mat Op Turquoise AB', hex: '#5ECCE6' },
+      { code: 'DB-1493-1', name: 'Opaque Light Salmon', hex: '#FF9F0A' },
+      { code: 'DB-1585', name: 'Matte Opaque Avocado', hex: '#30D158' },
       { code: 'DB-1832', name: 'Galvanized Gold Duracoat', hex: '#D4AF37' },
-      { code: 'DB-2366-TB', name: 'Duracoat Opq Soft', hex: '#E0AFA0' }
+      { code: 'DB-2366-TB', name: 'Duracoat Opq Soft', hex: '#FFD60A' }
     ];
 
     const CATALOG_ROCALLA = [
-      { code: '8-9402-TB', name: 'Rocalla 8/0 Op White', hex: '#F8F9FA' },
-      { code: '8-9404-TB', name: 'Rocalla 8/0 Op Yellow', hex: '#F4C430' },
-      { code: '8-9408-TB', name: 'Rocalla 8/0 Op Red', hex: '#D62828' },
-      { code: '8-9413F-TB', name: 'Rocalla 8/0 Seed Mat', hex: '#8D99AE' },
-      { code: '8-9414-TB', name: 'Rocalla 8/0 Op Cobalt', hex: '#1D3557' },
-      { code: '11-9401F-2TB', name: 'Rocalla 11/0 Matte Black', hex: '#111111' },
-      { code: '11-92006-2TB', name: 'Rocalla 11/0 Mtlc Dark', hex: '#4A4E69' },
-      { code: '11-9593-2TB', name: 'Rocalla 11/0 Beige Ceylon', hex: '#E9D8A6' },
-      { code: '11-9457L-2TB', name: 'Rocalla 11/0 Met Bronze', hex: '#B5838D' }
+      { code: '8-9402-TB', name: 'Rocalla 8/0 Op White', hex: '#F2F2F7' },
+      { code: '8-9404-TB', name: 'Rocalla 8/0 Op Yellow', hex: '#FFD60A' },
+      { code: '8-9408-TB', name: 'Rocalla 8/0 Op Red', hex: '#FF3B30' },
+      { code: '8-9413F-TB', name: 'Rocalla 8/0 Seed Mat', hex: '#8E8E93' },
+      { code: '8-9414-TB', name: 'Rocalla 8/0 Op Cobalt', hex: '#004080' },
+      { code: '11-9401F-2TB', name: 'Rocalla 11/0 Matte Black', hex: '#000000' },
+      { code: '11-92006-2TB', name: 'Rocalla 11/0 Mtlc Dark', hex: '#3A3A3C' },
+      { code: '11-9593-2TB', name: 'Rocalla 11/0 Beige Ceylon', hex: '#E5D0AC' },
+      { code: '11-9457L-2TB', name: 'Rocalla 11/0 Met Bronze', hex: '#8C6D58' }
     ];
 
-    // --- ESTADO DE LA APLICACIÓN ---
-    let rows = 20;
-    let cols = 35;
-    let beadSize = 18;
+    let rows = 20, cols = 35, beadSize = 18;
     let grid = [];
     let activeCatalog = CATALOG_DELICA;
     let selectedColor = CATALOG_DELICA[0];
@@ -502,7 +713,6 @@
     let currentSelectedDesignIndex = null;
     let copiedPatternGrid = null;
 
-    // Historial
     const historyStack = [];
     let historyIndex = -1;
     const MAX_HISTORY = 20;
@@ -526,13 +736,10 @@
       renderRulers();
     }
 
-    // --- REGLAS / ESCALAS NUMERADAS ---
     function renderRulers() {
       const rx = document.getElementById('rulerX');
       const ry = document.getElementById('rulerY');
-      rx.innerHTML = '';
-      ry.innerHTML = '';
-
+      rx.innerHTML = ''; ry.innerHTML = '';
       rx.style.width = `${canvas.width}px`;
       ry.style.height = `${canvas.height}px`;
 
@@ -555,7 +762,6 @@
       }
     }
 
-    // --- SELECCIÓN DE CATÁLOGO ---
     function switchCatalog(type) {
       document.getElementById('tabDelica').classList.toggle('active', type === 'delica');
       document.getElementById('tabRocalla').classList.toggle('active', type === 'rocalla');
@@ -567,7 +773,7 @@
     function renderPalette() {
       const container = document.getElementById('paletteContainer');
       container.innerHTML = '';
-      activeCatalog.forEach((color, idx) => {
+      activeCatalog.forEach((color) => {
         const div = document.createElement('div');
         div.className = `palette-item ${color.code === selectedColor.code ? 'active' : ''}`;
         div.style.backgroundColor = color.hex;
@@ -584,10 +790,9 @@
     }
 
     function updateSelectedColorLabel() {
-      document.getElementById('lblSelectedColor').textContent = `Activo: ${selectedColor.code} (${selectedColor.name})`;
+      document.getElementById('lblSelectedColor').textContent = `Sel: ${selectedColor.code} - ${selectedColor.name}`;
     }
 
-    // --- DIBUJO ---
     function requestRender() {
       if (!renderPending) {
         renderPending = true;
@@ -608,9 +813,11 @@
 
           if (grid[r][c]) {
             ctx.fillStyle = grid[r][c].hex;
-            ctx.fillRect(x + 1, y + 1, beadSize - 2, beadSize - 2);
+            ctx.beginPath();
+            ctx.roundRect(x + 1, y + 1, beadSize - 2, beadSize - 2, 3);
+            ctx.fill();
           } else {
-            ctx.strokeStyle = '#E2D9CD';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
             ctx.strokeRect(x, y, beadSize, beadSize);
           }
         }
@@ -642,35 +849,27 @@
       }
     }
 
-    // --- ACCIONES INTERACTIVAS (ESPEJO Y PATRONES) ---
     function mirrorGrid(type) {
       saveState();
-      if (type === 'horizontal') {
-        grid = grid.map(row => [...row].reverse());
-      } else if (type === 'vertical') {
-        grid.reverse();
-      }
+      if (type === 'horizontal') grid = grid.map(row => [...row].reverse());
+      else if (type === 'vertical') grid.reverse();
       requestRender();
       updateCalculations();
     }
 
     function copyPattern() {
       copiedPatternGrid = JSON.parse(JSON.stringify(grid));
-      alert('¡Patrón copiado al portapapeles!');
+      alert('Patrón copiado.');
     }
 
     function pastePattern() {
-      if (!copiedPatternGrid) {
-        alert('Primero debes copiar un patrón.');
-        return;
-      }
+      if (!copiedPatternGrid) return;
       saveState();
       grid = JSON.parse(JSON.stringify(copiedPatternGrid));
       requestRender();
       updateCalculations();
     }
 
-    // --- EVENTOS ---
     function setupEventListeners() {
       canvas.addEventListener('pointerdown', e => {
         saveState();
@@ -721,7 +920,6 @@
       if (tool === 'eraser') document.getElementById('toolEraser').classList.add('active');
     }
 
-    // --- HISTORIAL ---
     function saveState() {
       if (historyIndex < historyStack.length - 1) historyStack.splice(historyIndex + 1);
       historyStack.push(JSON.parse(JSON.stringify(grid)));
@@ -755,7 +953,6 @@
       document.getElementById('btnRedo').disabled = (historyIndex >= historyStack.length - 1);
     }
 
-    // --- CÁLCULO DE COSTOS ---
     function updateCalculations() {
       const colorCounts = {};
       let totalBeads = 0;
@@ -771,7 +968,7 @@
       });
 
       document.getElementById('lblTotalBeads').textContent = totalBeads;
-      document.getElementById('lblEstimatedCost').textContent = (totalBeads * 0.03).toFixed(2);
+      document.getElementById('lblEstimatedCost').textContent = `$${(totalBeads * 0.03).toFixed(2)}`;
 
       const tableBody = document.getElementById('liveColorTable');
       tableBody.innerHTML = '';
@@ -786,7 +983,6 @@
       });
     }
 
-    // --- GALERIA Y MODALES ---
     function getSavedDesigns() {
       return JSON.parse(localStorage.getItem('cinque_saved_designs') || '[]');
     }
@@ -804,7 +1000,7 @@
       });
 
       localStorage.setItem('cinque_saved_designs', JSON.stringify(designs));
-      alert('¡Diseño guardado exitosamente!');
+      alert('Proyecto Guardado');
     }
 
     document.getElementById('btnOpenGallery').onclick = () => {
@@ -818,7 +1014,7 @@
       const designs = getSavedDesigns();
 
       if (designs.length === 0) {
-        gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#888;">No tienes diseños guardados.</div>`;
+        gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-muted);">Sin diseños guardados.</div>`;
         return;
       }
 
@@ -828,8 +1024,8 @@
         card.onclick = () => openDetailModal(index);
         card.innerHTML = `
           <div class="card-thumbnail" id="thumb-${index}"></div>
-          <div style="font-weight:600; font-size:0.9rem;">${design.name}</div>
-          <div style="font-size:0.75rem; color:#666;">${design.product.toUpperCase()}</div>
+          <div style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">${design.name}</div>
+          <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">${design.product}</div>
         `;
         gridContainer.appendChild(card);
         setTimeout(() => renderThumbnail(`thumb-${index}`, design.grid), 0);
@@ -948,10 +1144,10 @@
             designs.unshift(imported);
             localStorage.setItem('cinque_saved_designs', JSON.stringify(designs));
             renderGallery();
-            alert('¡Diseño importado exitosamente!');
+            alert('¡Diseño importado!');
           }
         } catch (err) {
-          alert('Error al leer el archivo JSON.');
+          alert('Error al leer el JSON.');
         }
       };
       reader.readAsText(file);
