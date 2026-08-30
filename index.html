@@ -11,27 +11,28 @@
   
   <style>
     :root {
-      /* Paleta Corporativa Oficial CINQUE */
-      --bg-cream: #F9F5EE;        /* Blanco Crema / Nude */
-      --gold-primary: #C5A059;    /* Dorado Cálido / Bronce */
-      --gold-hover: #AA8541;      /* Dorado Hover */
-      --gold-light: #F4EEDF;      /* Dorado Soft */
-      --carbon-black: #1C1C1C;    /* Negro Carbón */
+      /* SISTEMA DE DISEÑO / PALETA OFICIAL MARCA CINQUE */
+      --bg-main: #FAF0E6;         /* Fondo Principal (85%) - Beige Crudo */
+      --gold-accent: #C5A059;     /* Acentos y Tono Medio (8%) - Dorado Medio */
+      --gold-hover: #B08C46;      /* Dorado Hover / Presionado */
+      --gold-light: #E5D3B3;      /* Brillos y Realces (4%) - Dorado Claro */
+      --text-dark: #2C2A29;       /* Texto Principal y Contraste (3%) - Gris Oscuro */
       
       --panel-bg: #FFFFFF;
-      --border-color: #E6DFD3;
-      --border-focus: #C5A059;
-      --text-muted: #736D65;
-      --danger-color: #D9534F;
-      --shadow-sm: 0 2px 8px rgba(28, 28, 28, 0.04);
-      --shadow-md: 0 10px 25px rgba(28, 28, 28, 0.06);
+      --border-color: rgba(197, 160, 89, 0.25);
+      --border-focus: var(--gold-accent);
+      --text-muted: #7A7571;
+      --danger-color: #C94A4A;
+      --shadow-sm: 0 2px 8px rgba(44, 42, 41, 0.04);
+      --shadow-md: 0 10px 30px rgba(44, 42, 41, 0.06);
+      --shadow-gold: 0 4px 20px rgba(197, 160, 89, 0.25);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-cream);
-      color: var(--carbon-black);
+      background-color: var(--bg-main);
+      color: var(--text-dark);
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       display: flex;
       flex-direction: column;
@@ -41,14 +42,14 @@
 
     /* Header High-Class */
     header {
-      background: var(--carbon-black);
-      color: #FFFFFF;
+      background: var(--text-dark);
+      color: var(--bg-main);
       padding: 16px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--gold-primary);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-bottom: 2px solid var(--gold-accent);
+      box-shadow: 0 4px 25px rgba(44, 42, 41, 0.15);
     }
 
     header .brand-title {
@@ -56,7 +57,7 @@
       font-size: 1.35rem;
       font-weight: 600;
       letter-spacing: 2px;
-      color: var(--gold-primary);
+      color: var(--gold-accent);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -66,7 +67,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 0.7rem;
       letter-spacing: 1.5px;
-      color: #A09D98;
+      color: var(--gold-light);
       text-transform: uppercase;
       font-weight: 500;
       display: block;
@@ -88,7 +89,7 @@
 
     .panel {
       background: var(--panel-bg);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 22px;
       border: 1px solid var(--border-color);
       display: flex;
@@ -104,7 +105,7 @@
       font-size: 1rem;
       font-weight: 600;
       letter-spacing: 1px;
-      color: var(--carbon-black);
+      color: var(--text-dark);
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 10px;
       display: flex;
@@ -139,31 +140,31 @@
     }
 
     .btn-gold { 
-      background: var(--gold-primary); 
+      background: linear-gradient(135deg, var(--gold-accent), var(--gold-hover)); 
       color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(197, 160, 89, 0.25);
+      box-shadow: var(--shadow-gold);
     }
     .btn-gold:hover { 
       background: var(--gold-hover); 
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(197, 160, 89, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
     }
 
     .btn-secondary { 
-      background: var(--bg-cream); 
-      color: var(--carbon-black); 
+      background: var(--bg-main); 
+      color: var(--text-dark); 
       border: 1px solid var(--border-color); 
     }
     .btn-secondary:hover { 
       background: var(--gold-light); 
-      border-color: var(--gold-primary);
-      color: var(--carbon-black);
+      border-color: var(--gold-accent);
+      color: var(--text-dark);
     }
     .btn-secondary.active { 
-      background: var(--carbon-black); 
-      color: var(--gold-primary); 
-      border-color: var(--carbon-black);
-      box-shadow: 0 4px 12px rgba(28, 28, 28, 0.2);
+      background: var(--text-dark); 
+      color: var(--gold-accent); 
+      border-color: var(--text-dark);
+      box-shadow: 0 4px 12px rgba(44, 42, 41, 0.25);
     }
 
     .btn-danger-outline { 
@@ -198,16 +199,17 @@
       padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
-      background-color: var(--bg-cream);
-      color: var(--carbon-black);
+      background-color: var(--bg-main);
+      color: var(--text-dark);
       font-weight: 600;
       font-size: 0.85rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s ease;
     }
 
     select.modern-select:focus, input.modern-input:focus {
-      border-color: var(--gold-primary);
+      border-color: var(--gold-accent);
+      box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
     }
 
     /* Grids de Herramientas */
@@ -250,8 +252,8 @@
     }
 
     .tab-btn.active {
-      border-bottom-color: var(--gold-primary);
-      color: var(--carbon-black);
+      border-bottom-color: var(--gold-accent);
+      color: var(--text-dark);
       font-weight: 700;
     }
 
@@ -274,18 +276,19 @@
       cursor: pointer;
       border: 2px solid transparent;
       position: relative;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-      transition: transform 0.2s, border-color 0.2s;
+      box-shadow: 0 2px 6px rgba(44, 42, 41, 0.08);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .palette-item:hover {
-      transform: scale(1.08);
+      transform: scale(1.1);
+      box-shadow: 0 4px 10px rgba(197, 160, 89, 0.3);
     }
 
     .palette-item.active {
-      border-color: var(--carbon-black);
-      transform: scale(1.1);
-      box-shadow: 0 0 0 2px var(--gold-primary);
+      border-color: var(--text-dark);
+      transform: scale(1.12);
+      box-shadow: 0 0 0 2px var(--gold-accent);
     }
 
     /* Canvas Contenedor */
@@ -295,7 +298,7 @@
       align-items: center;
       justify-content: center;
       background: var(--panel-bg);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 24px;
       overflow: auto;
       border: 1px solid var(--border-color);
@@ -304,25 +307,52 @@
       min-height: 500px;
     }
 
+    .canvas-status-bar {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: 0.5px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .canvas-status-bar::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold-accent);
+    }
+
     .ruler-wrapper {
       display: grid;
       grid-template-columns: 32px 1fr;
       grid-template-rows: 26px 1fr;
       background: #FFFFFF;
       padding: 12px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border-color);
+      margin-top: 10px;
     }
 
     .ruler-corner { 
-      background: var(--bg-cream); 
+      background: var(--bg-main); 
       border: 1px solid var(--border-color); 
       border-radius: 4px 0 0 0;
     }
     
     .ruler-x {
       display: flex;
-      background: var(--bg-cream);
+      background: var(--bg-main);
       border: 1px solid var(--border-color);
       border-left: none;
       border-radius: 0 4px 0 0;
@@ -332,7 +362,7 @@
     .ruler-y {
       display: flex;
       flex-direction: column;
-      background: var(--bg-cream);
+      background: var(--bg-main);
       border: 1px solid var(--border-color);
       border-top: none;
       border-radius: 0 0 0 4px;
@@ -347,6 +377,12 @@
       justify-content: center;
       box-sizing: border-box;
       font-weight: 700;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .ruler-cell.active-axis {
+      background: var(--gold-light);
+      color: var(--text-dark);
     }
 
     canvas {
@@ -366,10 +402,15 @@
     }
 
     .kpi-card {
-      background: var(--bg-cream);
-      padding: 12px;
-      border-radius: 10px;
+      background: var(--bg-main);
+      padding: 14px;
+      border-radius: 12px;
       border: 1px solid var(--border-color);
+      transition: border-color 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--gold-accent);
     }
 
     .kpi-title {
@@ -381,9 +422,9 @@
     }
 
     .kpi-value {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      color: var(--carbon-black);
+      color: var(--text-dark);
       margin-top: 4px;
       font-family: 'Cinzel', serif;
     }
@@ -393,7 +434,7 @@
       max-height: 240px; 
       overflow-y: auto; 
       border: 1px solid var(--border-color); 
-      border-radius: 8px; 
+      border-radius: 10px; 
     }
 
     .color-breakdown-table { 
@@ -403,13 +444,13 @@
     }
 
     .color-breakdown-table th {
-      background: var(--bg-cream);
-      color: var(--carbon-black);
+      background: var(--bg-main);
+      color: var(--text-dark);
       font-weight: 700;
       text-transform: uppercase;
       font-size: 0.7rem;
       letter-spacing: 0.5px;
-      padding: 8px;
+      padding: 10px 8px;
       border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
@@ -417,7 +458,7 @@
 
     .color-breakdown-table td { 
       padding: 8px; 
-      border-bottom: 1px solid var(--bg-cream); 
+      border-bottom: 1px solid var(--bg-main); 
       text-align: left; 
     }
 
@@ -426,7 +467,7 @@
       height: 18px; 
       border-radius: 50%; 
       border: 1px solid rgba(0,0,0,0.15); 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     }
 
     /* Toast Flotante */
@@ -434,14 +475,14 @@
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: var(--carbon-black);
-      color: var(--gold-primary);
+      background: var(--text-dark);
+      color: var(--gold-accent);
       padding: 12px 20px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 0.85rem;
       font-weight: 600;
-      border: 1px solid var(--gold-primary);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 1px solid var(--gold-accent);
+      box-shadow: 0 10px 25px rgba(44,42,41,0.25);
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -458,7 +499,7 @@
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(28, 28, 28, 0.6);
+      background: rgba(44, 42, 41, 0.6);
       backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center;
       z-index: 1000;
@@ -470,11 +511,11 @@
 
     .modal-container {
       background: #FFFFFF;
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 28px;
       max-height: 90vh;
       display: flex; flex-direction: column;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      box-shadow: 0 20px 50px rgba(44,42,41,0.25);
       border: 1px solid var(--border-color);
     }
 
@@ -490,7 +531,7 @@
     .modal-header h3 {
       font-family: 'Cinzel', serif;
       font-size: 1.2rem;
-      color: var(--carbon-black);
+      color: var(--text-dark);
     }
 
     .btn-close { 
@@ -501,7 +542,7 @@
       cursor: pointer; 
       line-height: 1;
     }
-    .btn-close:hover { color: var(--carbon-black); }
+    .btn-close:hover { color: var(--text-dark); }
 
     .gallery-grid {
       display: grid;
@@ -517,14 +558,14 @@
       border-radius: 12px;
       padding: 14px;
       cursor: pointer;
-      background: var(--bg-cream);
+      background: var(--bg-main);
       transition: all 0.25s ease;
     }
 
     .design-card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-md);
-      border-color: var(--gold-primary);
+      border-color: var(--gold-accent);
     }
 
     .card-thumbnail {
@@ -554,7 +595,7 @@
   <header>
     <div>
       <div class="brand-title">
-        <svg style="width:22px; height:22px; fill:var(--gold-primary);" viewBox="0 0 24 24">
+        <svg style="width:22px; height:22px; fill:var(--gold-accent);" viewBox="0 0 24 24">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
         CINQUE STUDIO
@@ -670,7 +711,7 @@
           <option value="all">Todas las Categorías</option>
           <option value="basics">Básicos & Neutros</option>
           <option value="metallic">Galvanizados & Metalizados</option>
-          <option value="matte">Mate / O paco</option>
+          <option value="matte">Mate / Opaco</option>
           <option value="neon">Neón & Vibrantes</option>
           <option value="pastel">Pastel & Soft</option>
           <option value="translucent">Traslúcidos & Brillantes</option>
@@ -688,6 +729,7 @@
 
     <!-- Centro: Canvas de Edición -->
     <section class="canvas-container">
+      <div id="canvasStatus" class="canvas-status-bar">Posición: Fila - • Col -</div>
       <div class="ruler-wrapper">
         <div class="ruler-corner"></div>
         <div id="rulerX" class="ruler-x"></div>
@@ -776,7 +818,7 @@
       </div>
 
       <div class="modal-body-split">
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-cream); padding:16px; border-radius:12px; border:1px solid var(--border-color);">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-main); padding:16px; border-radius:12px; border:1px solid var(--border-color);">
           <div id="detailCanvasContainer"></div>
         </div>
 
@@ -821,7 +863,7 @@
           <input type="file" id="fileInputImage" accept="image/*" class="modern-input">
         </div>
 
-        <div style="display:flex; justify-content:center; background:var(--bg-cream); padding:12px; border-radius:8px; border:1px solid var(--border-color); max-height:200px; overflow:hidden;">
+        <div style="display:flex; justify-content:center; background:var(--bg-main); padding:12px; border-radius:8px; border:1px solid var(--border-color); max-height:200px; overflow:hidden;">
           <img id="imgPreview" style="max-width:100%; max-height:180px; object-fit:contain; display:none;">
           <span id="imgPreviewPlaceholder" style="font-size:0.8rem; color:var(--text-muted); align-self:center;">Sin imagen seleccionada</span>
         </div>
@@ -839,8 +881,8 @@
     const CATALOG_DELICA = [
       // Básicos & Neutros
       { code: 'DB-0200', name: 'Opaque Chalk White', hex: '#FFFFFF', category: 'basics' },
-      { code: 'DB-0310', name: 'Jet Black Mate', hex: '#1C1C1C', category: 'basics' },
-      { code: 'DB-0351', name: 'Blanco Mate', hex: '#F0F0F0', category: 'basics' },
+      { code: 'DB-0310', name: 'Jet Black Mate', hex: '#2C2A29', category: 'basics' },
+      { code: 'DB-0351', name: 'Blanco Mate', hex: '#FAF0E6', category: 'basics' },
       { code: 'DB-0734', name: 'Op Chocolate Brown', hex: '#5C3D2E', category: 'basics' },
       { code: 'DB-0722', name: 'Opaque Orange', hex: '#FF7F11', category: 'basics' },
       { code: 'DB-0723', name: 'Opaque Red', hex: '#D62828', category: 'basics' },
@@ -858,7 +900,7 @@
       { code: 'DB-0756', name: 'Matte Opaque Cobalt', hex: '#2B4C7E', category: 'matte' },
       { code: 'DB-1585', name: 'Matte Opaque Avocado', hex: '#606C38', category: 'matte' },
       { code: 'DB-0878', name: 'Mat Op Turquoise AB', hex: '#2A9D8F', category: 'matte' },
-      { code: 'DB-0352', name: 'Matte Pale Yellow', hex: '#FFEAA7', category: 'matte' },
+      { code: 'DB-0352', name: 'Matte Pale Yellow', hex: '#E5D3B3', category: 'matte' },
       { code: 'DB-0358', name: 'Matte Opaque Navy Blue', hex: '#1B2A4A', category: 'matte' },
       { code: 'DB-0355', name: 'Matte Opaque Purple', hex: '#4A2574', category: 'matte' },
 
@@ -885,14 +927,14 @@
     ];
 
     const CATALOG_ROCALLA = [
-      { code: '8-9402-TB', name: 'Rocalla 8/0 Op White', hex: '#F9F5EE', category: 'basics' },
+      { code: '8-9402-TB', name: 'Rocalla 8/0 Op White', hex: '#FAF0E6', category: 'basics' },
       { code: '8-9404-TB', name: 'Rocalla 8/0 Op Yellow', hex: '#F4C430', category: 'neon' },
       { code: '8-9408-TB', name: 'Rocalla 8/0 Op Red', hex: '#D62828', category: 'basics' },
       { code: '8-9413F-TB', name: 'Rocalla 8/0 Seed Mat', hex: '#8D99AE', category: 'matte' },
       { code: '8-9414-TB', name: 'Rocalla 8/0 Op Cobalt', hex: '#1D3557', category: 'basics' },
-      { code: '11-9401F-2TB', name: 'Rocalla 11/0 Matte Black', hex: '#1C1C1C', category: 'matte' },
+      { code: '11-9401F-2TB', name: 'Rocalla 11/0 Matte Black', hex: '#2C2A29', category: 'matte' },
       { code: '11-92006-2TB', name: 'Rocalla 11/0 Mtlc Dark', hex: '#4A4E69', category: 'metallic' },
-      { code: '11-9593-2TB', name: 'Rocalla 11/0 Beige Ceylon', hex: '#E9D8A6', category: 'pastel' },
+      { code: '11-9593-2TB', name: 'Rocalla 11/0 Beige Ceylon', hex: '#E5D3B3', category: 'pastel' },
       { code: '11-9457L-2TB', name: 'Rocalla 11/0 Met Bronze', hex: '#C5A059', category: 'metallic' }
     ];
 
@@ -977,6 +1019,7 @@
       for (let c = 0; c < cols; c++) {
         const cell = document.createElement('div');
         cell.className = 'ruler-cell';
+        cell.id = `ruler-x-${c}`;
         cell.style.width = `${beadSize}px`;
         cell.style.height = '100%';
         cell.textContent = (c + 1) % 5 === 0 || c === 0 ? c + 1 : '•';
@@ -986,11 +1029,20 @@
       for (let r = 0; r < rows; r++) {
         const cell = document.createElement('div');
         cell.className = 'ruler-cell';
+        cell.id = `ruler-y-${r}`;
         cell.style.height = `${beadSize}px`;
         cell.style.width = '100%';
         cell.textContent = (r + 1) % 5 === 0 || r === 0 ? r + 1 : '•';
         ry.appendChild(cell);
       }
+    }
+
+    function highlightRulers(r, c) {
+      document.querySelectorAll('.ruler-cell').forEach(el => el.classList.remove('active-axis'));
+      const xElem = document.getElementById(`ruler-x-${c}`);
+      const yElem = document.getElementById(`ruler-y-${r}`);
+      if (xElem) xElem.classList.add('active-axis');
+      if (yElem) yElem.classList.add('active-axis');
     }
 
     function switchCatalog(type) {
@@ -1058,7 +1110,7 @@
             ctx.fillStyle = grid[r][c].hex;
             ctx.fillRect(x + 1, y + 1, beadSize - 2, beadSize - 2);
           } else {
-            ctx.strokeStyle = '#E6DFD3';
+            ctx.strokeStyle = 'rgba(197, 160, 89, 0.2)';
             ctx.strokeRect(x, y, beadSize, beadSize);
           }
         }
@@ -1138,12 +1190,22 @@
       });
 
       canvas.addEventListener('pointermove', e => {
-        if (!isDrawing) return;
         const coords = getBeadCoords(e);
+        if (coords.r >= 0 && coords.r < rows && coords.c >= 0 && coords.c < cols) {
+          document.getElementById('canvasStatus').textContent = `Posición: Fila ${coords.r + 1} • Col ${coords.c + 1}`;
+          highlightRulers(coords.r, coords.c);
+        }
+
+        if (!isDrawing) return;
         if (currentTool === 'pencil' || currentTool === 'eraser') {
           applyBead(coords.r, coords.c);
         }
         requestRender();
+      });
+
+      canvas.addEventListener('pointerleave', () => {
+        document.getElementById('canvasStatus').textContent = `Posición: Fila - • Col -`;
+        document.querySelectorAll('.ruler-cell').forEach(el => el.classList.remove('active-axis'));
       });
 
       window.addEventListener('pointerup', () => {
@@ -1282,7 +1344,7 @@
         card.onclick = () => openDetailModal(index);
         card.innerHTML = `
           <div class="card-thumbnail" id="thumb-${index}"></div>
-          <div style="font-weight:700; font-size:0.9rem; color:var(--carbon-black);">${design.name}</div>
+          <div style="font-weight:700; font-size:0.9rem; color:var(--text-dark);">${design.name}</div>
           <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-top:2px;">${design.product} (${design.rows || 20}x${design.cols || 35})</div>
         `;
         gridContainer.appendChild(card);
