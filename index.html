@@ -3,214 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diseñador Miyuki 2D - Mi Tienda</title>
+    <title>Miyuki Craft Studio Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f4f4f9;
-            --panel-bg: #ffffff;
-            --primary: #2c3e50;
-            --accent: #27ae60;
+            --bg-main: #0f1117;
+            --panel-bg: rgba(22, 25, 35, 0.85);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --accent: #6c5ce7;
+            --accent-glow: rgba(108, 92, 231, 0.4);
+            --success: #00b894;
+            --text-main: #f1f2f6;
+            --text-muted: #a4b0be;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
-            padding: 15px;
-            background-color: var(--bg-color);
-            color: #333;
+            padding: 20px;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-main) 70%);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        h1 { margin-bottom: 5px; font-size: 1.5rem; text-align: center; }
-        p { margin-top: 0; color: #666; font-size: 0.9rem; text-align: center; }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-        .container {
-            display: flex;
-            flex-wrap: wrap;
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #a8c0ff, #3f2b96);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .app-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
             gap: 20px;
-            justify-content: center;
-            max-width: 1250px;
+            max-width: 1400px;
             width: 100%;
         }
 
-        .controls-panel, .summary-panel, .inventory-panel, .library-panel {
+        /* Glassmorphic Panels */
+        .panel {
             background: var(--panel-bg);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            flex: 1;
-            min-width: 280px;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .canvas-container {
-            background: #e0e0e0;
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin: 0 0 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Controls */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        select, input[type="text"], input[type="number"], input[type="color"] {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
             padding: 10px;
-            border-radius: 8px;
-            overflow: auto;
-            max-width: 100%;
-            max-height: 500px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Canvas Arena */
+        .viewport-container {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius-lg);
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            overflow: auto;
+            min-height: 500px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
         canvas {
-            background-color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
             cursor: crosshair;
             touch-action: none;
         }
 
-        .form-group { margin-bottom: 12px; }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 0.85rem;
-        }
-
-        select, input[type="text"], input[type="number"], input[type="color"], button {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        .palette-grid {
+        /* Tool Grid / Dock */
+        .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-            gap: 6px;
-            max-height: 160px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 6px;
-            border-radius: 4px;
-            background: #fafafa;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
 
-        .color-swatch {
-            width: 100%;
-            height: 38px;
-            border-radius: 4px;
+        .btn-tool {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
-            border: 2px solid #ccc;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.6rem;
-            font-weight: bold;
-            color: #000;
-            text-shadow: 0 0 2px #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-tool:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-tool.tool-active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            color: #fff;
+        }
+
+        .btn-tool.mirror-active {
+            background: #e67e22;
+            border-color: #e67e22;
+        }
+
+        .btn-tool:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Palette Swatches */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+            gap: 6px;
+            max-height: 140px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s, border-color 0.15s;
+            position: relative;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.15);
+            z-index: 2;
         }
 
         .color-swatch.selected {
-            border-color: #000;
-            transform: scale(1.08);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            border-color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
+        /* Price & Summary Tag */
+        .price-badge {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            color: #000;
         }
 
-        .btn-group button {
-            flex: 1 1 45%;
-            font-size: 0.75rem;
-            padding: 8px 4px;
+        .price-badge label {
+            color: rgba(0,0,0,0.6);
+            font-weight: 800;
         }
 
-        button {
-            background-color: var(--primary);
-            color: white;
-            font-weight: bold;
+        .price-badge .price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .btn-action {
+            background: var(--accent);
+            color: #fff;
             border: none;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-radius: 4px;
-        }
-
-        button:hover { opacity: 0.9; }
-
-        button.btn-whatsapp {
-            background-color: var(--accent);
-            margin-top: 15px;
             padding: 12px;
-            font-size: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
         }
 
-        .tool-active { 
-            outline: 2px solid var(--accent) !important;
-            background-color: #34495e !important;
+        .btn-action:hover {
+            opacity: 0.9;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
 
-        .mirror-active {
-            background-color: #e67e22 !important;
-        }
-        
-        .price-tag {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-top: 10px;
+        .btn-whatsapp {
+            background: #00b894;
+            color: #fff;
         }
 
         .design-item {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--panel-border);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px;
-            background: #f9f9f9;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-bottom: 5px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
         }
 
-        .design-item button {
-            width: auto;
-            padding: 4px 8px;
-            font-size: 0.75rem;
+        /* Responsive Layout */
+        @media (max-width: 1024px) {
+            .app-layout { grid-template-columns: 1fr; }
+            .viewport-container { min-height: 380px; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Diseñador Miyuki 2D</h1>
-    <p>Crea tu diseño personalizado con nuestro catálogo real</p>
+    <header>
+        <h1>MIYUKI CRAFT STUDIO</h1>
+        <p>Editor de Patrones 2D Pro</p>
+    </header>
 
-    <div class="container">
-        <!-- Panel de Configuración -->
-        <div class="controls-panel">
+    <div class="app-layout">
+        <!-- Panel Izquierdo: Configuración y Herramientas -->
+        <div class="panel">
+            <h3 class="panel-title">⚙️ Configuración</h3>
+            
             <div class="form-group">
-                <label for="productSelect">1. Producto:</label>
+                <label>Producto</label>
                 <select id="productSelect">
-                    <option value="anillo">Anillo (6x50 cuentas)</option>
-                    <option value="pulsera" selected>Pulsera (16x100 cuentas)</option>
-                    <option value="dije">Dije / Parche (25x25 cuentas)</option>
+                    <option value="anillo">Anillo (6x50)</option>
+                    <option value="pulsera" selected>Pulsera (16x100)</option>
+                    <option value="dije">Dije / Parche (25x25)</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="techniqueSelect">2. Técnica de Tejido:</label>
+                <label>Técnica de Tejido</label>
                 <select id="techniqueSelect">
-                    <option value="loom">Loom Weaving (Telar Recto)</option>
-                    <option value="peyote">Peyote Stitch (Intercalado Horizontal)</option>
-                    <option value="brick">Brick Stitch (Intercalado Vertical)</option>
+                    <option value="loom">Loom (Telar Recto)</option>
+                    <option value="peyote">Peyote (Intercalado Horiz.)</option>
+                    <option value="brick">Brick (Intercalado Vert.)</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="templateSelect">3. Plantillas Base (Sin Relleno):</label>
+                <label>Plantilla Silueta</label>
                 <select id="templateSelect">
-                    <option value="none">-- Seleccionar Plantilla --</option>
+                    <option value="none">-- Sin Plantilla --</option>
                     <option value="diamond">Diamante / Rombo</option>
                     <option value="chevron">Zig-Zag (Chevron)</option>
                     <option value="flower">Flor (8 Pétalos)</option>
@@ -218,77 +320,45 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>4. Seleccionar Color en Stock:</label>
-                <div class="palette-grid" id="paletteContainer"></div>
-                <small id="selectedColorLabel" style="display:block; margin-top:5px; font-weight:bold; color:#2c3e50;"></small>
+            <h3 class="panel-title" style="margin-top:10px;">🛠️ Herramientas</h3>
+            <div class="tools-grid">
+                <button id="btnPencil" class="btn-tool tool-active">✏️ Lápiz</button>
+                <button id="btnBucket" class="btn-tool">🪣 Relleno</button>
+                <button id="btnEraser" class="btn-tool">🧹 Borrar</button>
+                <button id="btnSelect" class="btn-tool">🔳 Seleccionar</button>
+                <button id="btnCopy" class="btn-tool" disabled>📋 Copiar</button>
+                <button id="btnPaste" class="btn-tool" disabled>📌 Pegar</button>
+                <button id="btnMirrorH" class="btn-tool" disabled>🪞 Espejo H</button>
+                <button id="btnMirrorV" class="btn-tool" disabled>↕️ Espejo V</button>
             </div>
-
-            <div class="btn-group">
-                <button id="btnPencil" class="tool-active">✏️ Lápiz</button>
-                <button id="btnBucket">🪣 Relleno</button>
-                <button id="btnEraser">🧹 Borrar</button>
-                <button id="btnSelect">🔳 Seleccionar</button>
-                <button id="btnCopy" disabled>📋 Copiar</button>
-                <button id="btnPaste" disabled>📌 Pegar Normal</button>
-                <button id="btnMirrorH" disabled>🪞 Espejo Horiz.</button>
-                <button id="btnMirrorV" disabled>↕️ Espejo Vert.</button>
-                <button id="btnClear" style="flex: 1 1 100%; background: #c0392b;">🗑️ Limpiar Todo</button>
-            </div>
+            <button id="btnClear" class="btn-tool" style="background: rgba(231, 76, 60, 0.2); border-color: rgba(231, 76, 60, 0.4); color:#e74c3c;">🗑️ Limpiar Todo</button>
         </div>
 
-        <!-- Área del Lienzo 2D -->
-        <div class="canvas-container">
+        <!-- Panel Central: Lienzo de Trabajo -->
+        <div class="viewport-container">
             <canvas id="miyukiCanvas"></canvas>
         </div>
 
-        <!-- Panel de Biblioteca y Guardado -->
-        <div class="library-panel">
-            <h3>📂 Biblioteca de Diseños</h3>
-            <div class="form-group">
-                <label>Nombre del Diseño:</label>
-                <input type="text" id="designName" placeholder="Ej. Pulsera Flores V1">
-            </div>
-            <button id="btnSaveDesign" style="background:#2980b9; margin-bottom: 10px;">💾 Guardar en Biblioteca</button>
-            
-            <div id="savedDesignsList" style="max-height: 200px; overflow-y: auto;">
-                <em>No hay diseños guardados aún.</em>
-            </div>
-        </div>
+        <!-- Panel Derecho: Catálogo, Biblioteca y Cotización -->
+        <div class="panel">
+            <h3 class="panel-title">🎨 Paleta en Stock</h3>
+            <div class="palette-grid" id="paletteContainer"></div>
+            <span id="selectedColorLabel" style="font-size:0.75rem; font-weight:600; color:var(--text-muted);"></span>
 
-        <!-- Panel de Resumen y Cotización -->
-        <div class="summary-panel">
-            <h3>Resumen del Pedido</h3>
-            <p>Total Cuentas: <strong id="totalBeads">0</strong></p>
-            <div id="beadBreakdown" style="font-size:0.8rem; max-height:100px; overflow-y:auto; margin-bottom:10px; background:#f9f9f9; padding:5px; border-radius:4px;"></div>
-            <hr>
-            <label>Costo Estimado:</label>
-            <div class="price-tag" id="totalPrice">$0.00</div>
-            
-            <button class="btn-whatsapp" id="btnSendWhatsapp">📲 Enviar Pedido por WhatsApp</button>
-        </div>
+            <h3 class="panel-title" style="margin-top: 10px;">📁 Biblioteca</h3>
+            <div class="form-group">
+                <input type="text" id="designName" placeholder="Nombre del diseño...">
+            </div>
+            <button id="btnSaveDesign" class="btn-action" style="background: rgba(255,255,255,0.08);">💾 Guardar Diseño</button>
+            <div id="savedDesignsList" style="max-height: 120px; overflow-y: auto;"></div>
 
-        <!-- Panel de Administración (Agregar Nuevos Colores) -->
-        <div class="inventory-panel">
-            <h3>+ Agregar Nuevo Color al Stock</h3>
-            <div class="form-group">
-                <label>Código (ej. DB0010):</label>
-                <input type="text" id="newCode" placeholder="DBXXXX">
+            <div class="price-badge">
+                <label>COSTO ESTIMADO</label>
+                <div class="price" id="totalPrice">$0.00</div>
+                <div style="font-size:0.75rem; margin-top:2px;">Total Cuentas: <strong id="totalBeads">0</strong></div>
             </div>
-            <div class="form-group">
-                <label>Nombre / Descripción:</label>
-                <input type="text" id="newName" placeholder="Ej. Turquoise Mat">
-            </div>
-            <div class="form-group">
-                <label>Color Visual:</label>
-                <input type="color" id="newHex" value="#333333">
-            </div>
-            <div class="form-group">
-                <label>Costo por Cuenta ($):</label>
-                <input type="number" id="newPrice" step="0.001" value="0.01">
-            </div>
-            <button id="btnAddColor" style="background:#27ae60; padding:10px;">Guardar Color en Catálogo</button>
-            <button id="btnResetPalette" style="background:#e74c3c; padding:6px; margin-top:8px; font-size:0.75rem;">Restablecer Catálogo Original</button>
+
+            <button class="btn-action btn-whatsapp" id="btnSendWhatsapp">📲 Pedir por WhatsApp</button>
         </div>
     </div>
 
@@ -296,7 +366,6 @@
         const canvas = document.getElementById('miyukiCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Catálogo Completo Precargado
         const DEFAULT_PALETTE = [
             { code: "DB0351", name: "Blanco mate", hex: "#F8F9FA", price: 0.01 },
             { code: "DB1493-1", name: "Opaque Lt Salmon", hex: "#FFA089", price: 0.01 },
@@ -318,22 +387,16 @@
             { code: "DB1832", name: "Galvanized Gold", hex: "#D4AF37", price: 0.018 },
             { code: "DB0726", name: "Opaque Dark Blue", hex: "#002366", price: 0.01 },
             { code: "DB0727", name: "Opaque Light Siam", hex: "#E32636", price: 0.01 },
-            { code: "DB0725", name: "Opaque Light Blue", hex: "#87CEEB", price: 0.01 },
-            { code: "8-9404", name: "Rocalla 8/0 Op Yellow", hex: "#FFEE55", price: 0.012 },
-            { code: "8-9402", name: "Rocalla 8/0 Op White", hex: "#FAFAFA", price: 0.012 },
-            { code: "8-9414", name: "Rocalla 8/0 Op Cobalt", hex: "#0047AB", price: 0.012 },
-            { code: "8-9408", name: "Rocalla 8/0 Op Red", hex: "#DC143C", price: 0.012 },
-            { code: "8-9413F", name: "Rocalla 8/0 Mat", hex: "#555555", price: 0.012 }
+            { code: "DB0725", name: "Opaque Light Blue", hex: "#87CEEB", price: 0.01 }
         ];
 
         let palette = JSON.parse(localStorage.getItem('miyuki_palette')) || DEFAULT_PALETTE;
         let selectedColor = palette[0];
         let currentTool = 'pencil';
-        let cols = 100, rows = 16, beadSize = 12;
+        let cols = 100, rows = 16, beadSize = 14;
         let grid = [];
         let isDrawing = false;
 
-        // Variables de Selección, Copia y Espejo
         let selectionStart = null;
         let selectionEnd = null;
         let clipboard = null;
@@ -355,15 +418,14 @@
                 swatch.className = `color-swatch ${item.code === selectedColor.code ? 'selected' : ''}`;
                 swatch.style.backgroundColor = item.hex;
                 swatch.title = `${item.code} - ${item.name}`;
-                swatch.textContent = item.code.substring(0, 5);
                 swatch.onclick = () => {
                     selectedColor = item;
-                    document.getElementById('selectedColorLabel').textContent = `Color: ${item.code} - ${item.name}`;
+                    document.getElementById('selectedColorLabel').textContent = `${item.code} - ${item.name}`;
                     renderPalette();
                 };
                 container.appendChild(swatch);
             });
-            document.getElementById('selectedColorLabel').textContent = `Color: ${selectedColor.code} - ${selectedColor.name}`;
+            document.getElementById('selectedColorLabel').textContent = `${selectedColor.code} - ${selectedColor.name}`;
         }
 
         function initGrid() {
@@ -410,22 +472,19 @@
                     let x = c * beadSize;
                     let y = r * beadSize;
 
-                    if (technique === 'peyote' && r % 2 !== 0) {
-                        x += beadSize / 2;
-                    } else if (technique === 'brick' && c % 2 !== 0) {
-                        y += beadSize / 2;
-                    }
+                    if (technique === 'peyote' && r % 2 !== 0) x += beadSize / 2;
+                    if (technique === 'brick' && c % 2 !== 0) y += beadSize / 2;
 
                     ctx.beginPath();
-                    ctx.rect(x, y, beadSize - 1, beadSize - 1);
+                    ctx.roundRect(x, y, beadSize - 1.5, beadSize - 1.5, 3);
 
                     if (grid[r][c]) {
                         ctx.fillStyle = grid[r][c].hex;
                         ctx.fill();
                     } else {
-                        ctx.fillStyle = '#f0f0f0';
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
                         ctx.fill();
-                        ctx.strokeStyle = '#ddd';
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
                         ctx.stroke();
                     }
                 }
@@ -442,11 +501,11 @@
                 const w = (maxC - minC + 1) * beadSize;
                 const h = (maxR - minR + 1) * beadSize;
 
-                ctx.strokeStyle = '#0066ff';
+                ctx.strokeStyle = '#6c5ce7';
                 ctx.lineWidth = 2;
                 ctx.setLineDash([4, 4]);
                 ctx.strokeRect(x, y, w, h);
-                ctx.fillStyle = 'rgba(0, 102, 255, 0.15)';
+                ctx.fillStyle = 'rgba(108, 92, 231, 0.2)';
                 ctx.fillRect(x, y, w, h);
                 ctx.setLineDash([]);
             }
@@ -536,7 +595,6 @@
             document.getElementById('btnPaste').disabled = false;
             document.getElementById('btnMirrorH').disabled = false;
             document.getElementById('btnMirrorV').disabled = false;
-            alert('¡Patrón copiado! Activa los espejos si deseas invertirlo y luego haz clic en "Pegar".');
         }
 
         function pasteClipboard(startR, startC) {
@@ -559,7 +617,6 @@
             }
         }
 
-        // Generador de Plantillas / Patrones Base sin Relleno
         function applyTemplate(type) {
             if (type === 'none') return;
             const midR = Math.floor(rows / 2);
@@ -581,23 +638,14 @@
                     if (r >= 0 && r < rows) grid[r][c] = selectedColor;
                 }
             } else if (type === 'flower') {
-                const offsets = [
-                    [-2,0], [-2,1], [-1,2], [0,2], [1,2], [2,1], [2,0], [2,-1], [1,-2], [0,-2], [-1,-2], [-2,-1]
-                ];
+                const offsets = [[-2,0], [-2,1], [-1,2], [0,2], [1,2], [2,1], [2,0], [2,-1], [1,-2], [0,-2], [-1,-2], [-2,-1]];
                 offsets.forEach(([dr, dc]) => {
-                    if (midR + dr >= 0 && midR + dr < rows && midC + dc >= 0 && midC + dc < cols) {
-                        grid[midR + dr][midC + dc] = selectedColor;
-                    }
+                    if (midR + dr >= 0 && midR + dr < rows && midC + dc >= 0 && midC + dc < cols) grid[midR + dr][midC + dc] = selectedColor;
                 });
             } else if (type === 'heart') {
-                const heartCoords = [
-                    [-2,-1], [-2,1], [-3,-2], [-3,2], [-2,-3], [-2,3], [-1,-3], [-1,3],
-                    [0,-2], [0,2], [1,-1], [1,1], [2,0]
-                ];
+                const heartCoords = [[-2,-1], [-2,1], [-3,-2], [-3,2], [-2,-3], [-2,3], [-1,-3], [-1,3], [0,-2], [0,2], [1,-1], [1,1], [2,0]];
                 heartCoords.forEach(([dr, dc]) => {
-                    if (midR + dr >= 0 && midR + dr < rows && midC + dc >= 0 && midC + dc < cols) {
-                        grid[midR + dr][midC + dc] = selectedColor;
-                    }
+                    if (midR + dr >= 0 && midR + dr < rows && midC + dc >= 0 && midC + dc < cols) grid[midR + dr][midC + dc] = selectedColor;
                 });
             }
 
@@ -605,14 +653,10 @@
             updateCalculations();
         }
 
-        // Gestión de Biblioteca de Diseños
         function saveDesign() {
             const nameInput = document.getElementById('designName');
             const name = nameInput.value.trim();
-            if (!name) {
-                alert('Por favor, ingresa un nombre para el diseño.');
-                return;
-            }
+            if (!name) return;
 
             let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
             designs[name] = {
@@ -624,7 +668,6 @@
             localStorage.setItem('miyuki_saved_designs', JSON.stringify(designs));
             nameInput.value = '';
             renderSavedDesigns();
-            alert(`¡Diseño "${name}" guardado exitosamente en tu biblioteca!`);
         }
 
         function loadDesign(name) {
@@ -641,12 +684,10 @@
         }
 
         function deleteDesign(name) {
-            if (confirm(`¿Seguro que deseas eliminar "${name}" de tu biblioteca?`)) {
-                let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
-                delete designs[name];
-                localStorage.setItem('miyuki_saved_designs', JSON.stringify(designs));
-                renderSavedDesigns();
-            }
+            let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
+            delete designs[name];
+            localStorage.setItem('miyuki_saved_designs', JSON.stringify(designs));
+            renderSavedDesigns();
         }
 
         function renderSavedDesigns() {
@@ -655,7 +696,7 @@
             const keys = Object.keys(designs);
 
             if (keys.length === 0) {
-                container.innerHTML = '<em>No hay diseños guardados aún.</em>';
+                container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Sin diseños guardados.</span>';
                 return;
             }
 
@@ -664,10 +705,10 @@
                 const item = document.createElement('div');
                 item.className = 'design-item';
                 item.innerHTML = `
-                    <span><strong>${name}</strong></span>
+                    <span>${name}</span>
                     <div>
-                        <button style="background:#27ae60;" onclick="loadDesign('${name}')">📂 Cargar</button>
-                        <button style="background:#e74c3c;" onclick="deleteDesign('${name}')">🗑️</button>
+                        <button style="background:var(--accent); border:none; color:#fff; border-radius:4px; padding:2px 6px; cursor:pointer;" onclick="loadDesign('${name}')">📂</button>
+                        <button style="background:#e74c3c; border:none; color:#fff; border-radius:4px; padding:2px 6px; cursor:pointer;" onclick="deleteDesign('${name}')">🗑️</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -675,7 +716,6 @@
         }
 
         function updateCalculations() {
-            let counts = {};
             let totalBeads = 0;
             let totalPrice = 0;
 
@@ -684,7 +724,6 @@
                     let bead = grid[r][c];
                     if (bead) {
                         totalBeads++;
-                        counts[bead.code] = (counts[bead.code] || 0) + 1;
                         totalPrice += bead.price;
                     }
                 }
@@ -695,15 +734,8 @@
 
             document.getElementById('totalBeads').textContent = totalBeads;
             document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
-
-            let breakdownHTML = '';
-            for (let code in counts) {
-                breakdownHTML += `<div>• <strong>${code}</strong>: ${counts[code]} cuentas</div>`;
-            }
-            document.getElementById('beadBreakdown').innerHTML = breakdownHTML || '<em>Sin cuentas dibujadas</em>';
         }
 
-        // Eventos de Mouse/Touch
         canvas.addEventListener('mousedown', handlePointerDown);
         canvas.addEventListener('mousemove', handlePointerMove);
         window.addEventListener('mouseup', () => isDrawing = false);
@@ -716,7 +748,6 @@
         document.getElementById('techniqueSelect').addEventListener('change', () => { initGrid(); draw(); });
         document.getElementById('templateSelect').addEventListener('change', (e) => applyTemplate(e.target.value));
 
-        // Botones de herramientas
         document.getElementById('btnPencil').onclick = () => setTool('pencil', 'btnPencil');
         document.getElementById('btnBucket').onclick = () => setTool('bucket', 'btnBucket');
         document.getElementById('btnEraser').onclick = () => setTool('eraser', 'btnEraser');
@@ -746,7 +777,7 @@
 
         function setTool(tool, btnId) {
             currentTool = tool;
-            document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('tool-active'));
+            document.querySelectorAll('.tools-grid button').forEach(b => b.classList.remove('tool-active'));
             if(btnId) document.getElementById(btnId).classList.add('tool-active');
             if(tool !== 'select' && tool !== 'paste') {
                 selectionStart = null;
@@ -755,51 +786,20 @@
             }
         }
 
-        // Guardar Nuevo Color al Inventario
-        document.getElementById('btnAddColor').onclick = () => {
-            const code = document.getElementById('newCode').value.trim();
-            const name = document.getElementById('newName').value.trim();
-            const hex = document.getElementById('newHex').value;
-            const price = parseFloat(document.getElementById('newPrice').value);
-
-            if (code && name && !isNaN(price)) {
-                palette.push({ code, name, hex, price });
-                localStorage.setItem('miyuki_palette', JSON.stringify(palette));
-                renderPalette();
-                alert(`Color ${code} agregado con éxito.`);
-            } else {
-                alert('Por favor complete todos los campos.');
-            }
-        };
-
-        // Restablecer catálogo
-        document.getElementById('btnResetPalette').onclick = () => {
-            if (confirm("¿Deseas restablecer el catálogo a la lista original de 26 colores?")) {
-                palette = DEFAULT_PALETTE;
-                localStorage.setItem('miyuki_palette', JSON.stringify(palette));
-                selectedColor = palette[0];
-                renderPalette();
-            }
-        };
-
-        // WhatsApp
         document.getElementById('btnSendWhatsapp').onclick = () => {
             const product = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
-            const technique = document.getElementById('techniqueSelect').options[document.getElementById('techniqueSelect').selectedIndex].text;
             const beads = document.getElementById('totalBeads').textContent;
             const price = document.getElementById('totalPrice').textContent;
 
             const text = `¡Hola! Quisiera realizar el siguiente pedido personalizado:%0A%0A` +
                          `📌 *Producto:* ${product}%0A` +
-                         `🧵 *Técnica:* ${technique}%0A` +
                          `🧩 *Total Cuentas:* ${beads}%0A` +
                          `💰 *Precio Estimado:* ${price}%0A%0A` +
-                         `Te adjunto el diseño dibujado.`;
+                         `Te adjunto el diseño dibujado desde la web.`;
 
             window.open(`https://api.whatsapp.com/send?phone=5491100000000&text=${text}`, '_blank');
         };
 
-        // Iniciar App
         renderPalette();
         renderSavedDesigns();
         initGrid();
