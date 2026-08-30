@@ -13,8 +13,8 @@
             --gold-primary: #c5a059;
             --gold-light: #e6cb96;
             --gold-dark: #8c6e30;
-            --grid-line: rgba(140, 110, 48, 0.45); /* Malla más oscura y definida */
-            --grid-bg-empty: #f2eae0; /* Fondo del lienzo más contrastado */
+            --grid-line-solid: #5a4325; /* Línea de malla sólida y oscura */
+            --grid-bg-empty: #e2d7c7;  /* Fondo de casilleros en alto contraste */
             --text-dark: #2c2825;
             --text-muted: #7a736a;
             --accent-soft: #f4ece1;
@@ -127,24 +127,24 @@
             box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
         }
 
-        /* Contenedor del Lienzo */
+        /* Contenedor del Lienzo con fondo oscuro de alto contraste */
         .viewport-container {
             position: relative;
-            background: #e8ded2; /* Contraste exterior */
-            border: 2px solid var(--gold-dark);
+            background: #3a332c; 
+            border: 3px solid var(--gold-dark);
             border-radius: var(--radius-lg);
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: auto;
             min-height: 520px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.06), 0 10px 30px rgba(197, 160, 89, 0.1);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.15);
             padding: 20px;
         }
 
         canvas {
             border-radius: 4px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             cursor: crosshair;
             touch-action: none;
             background-color: var(--grid-bg-empty);
@@ -520,8 +520,8 @@
         }
 
         function draw() {
-            // Fondo general del lienzo
-            ctx.fillStyle = '#f2eae0';
+            // Fondo general del área de trabajo (lienzo)
+            ctx.fillStyle = '#e2d7c7';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const technique = document.getElementById('techniqueSelect').value;
@@ -538,7 +538,7 @@
                     
                     const bead = grid[r][c];
                     if (bead && bead.type === 'rocalla') {
-                        ctx.arc(x + beadSize/2 - 0.5, y + beadSize/2 - 0.5, (beadSize - 2)/2, 0, Math.PI * 2);
+                        ctx.arc(x + beadSize/2, y + beadSize/2, (beadSize - 2)/2, 0, Math.PI * 2);
                     } else {
                         ctx.roundRect(x + 0.5, y + 0.5, beadSize - 1, beadSize - 1, 2);
                     }
@@ -546,15 +546,15 @@
                     if (bead) {
                         ctx.fillStyle = bead.hex;
                         ctx.fill();
-                        ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+                        ctx.strokeStyle = '#1a1a1a';
                         ctx.lineWidth = 1;
                         ctx.stroke();
                     } else {
-                        // Casilla vacía con marco oscuro bien definido
-                        ctx.fillStyle = '#f9f5f0';
+                        // Casilla vacía con marco muy definido y sólido
+                        ctx.fillStyle = '#ebd6be';
                         ctx.fill();
-                        ctx.strokeStyle = 'rgba(140, 110, 48, 0.45)'; // Malla contrastada
-                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = '#5a4325'; // Línea sólida bien oscura
+                        ctx.lineWidth = 1.5;
                         ctx.stroke();
                     }
                 }
@@ -571,11 +571,11 @@
                 const w = (maxC - minC + 1) * beadSize;
                 const h = (maxR - minR + 1) * beadSize;
 
-                ctx.strokeStyle = '#8c6e30';
+                ctx.strokeStyle = '#000000';
                 ctx.lineWidth = 2;
                 ctx.setLineDash([4, 4]);
                 ctx.strokeRect(x, y, w, h);
-                ctx.fillStyle = 'rgba(140, 110, 48, 0.2)';
+                ctx.fillStyle = 'rgba(197, 160, 89, 0.3)';
                 ctx.fillRect(x, y, w, h);
                 ctx.setLineDash([]);
             }
