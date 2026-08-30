@@ -14,7 +14,7 @@
             --gold-light: #e6cb96;
             --gold-dark: #8c6e30;
             --grid-line-solid: #5a4325;
-            --grid-bg-empty: #eedfcc;  /* Tono suavizado y cálido */
+            --grid-bg-empty: #eedfcc;
             --text-dark: #2c2825;
             --text-muted: #7a736a;
             --accent-soft: #f4ece1;
@@ -137,7 +137,7 @@
             box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
         }
 
-        /* Contenedor del Lienzo con fondo suavizado */
+        /* Contenedor del Lienzo */
         .viewport-container {
             position: relative;
             background: #2a2520; 
@@ -150,6 +150,24 @@
             min-height: 520px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 10px 30px rgba(0,0,0,0.12);
             padding: 20px;
+        }
+
+        /* Badge visual UX de herramienta activa en Canvas */
+        .active-tool-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(42, 37, 32, 0.85);
+            color: var(--gold-light);
+            border: 1px solid var(--gold-primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+            z-index: 5;
+            pointer-events: none;
         }
 
         canvas {
@@ -209,7 +227,6 @@
             border-color: #e0e0e0;
         }
 
-        /* Sección de herramientas avanzadas */
         .advanced-actions {
             background: var(--accent-soft);
             border-radius: var(--radius-md);
@@ -344,6 +361,14 @@
             margin-bottom: 6px;
         }
 
+        .design-item button {
+            background: transparent;
+            border: none;
+            color: var(--gold-dark);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
         @media (max-width: 1024px) {
             .app-layout { grid-template-columns: 1fr; }
             .viewport-container { min-height: 380px; }
@@ -402,25 +427,25 @@
             <div class="tools-grid">
                 <button id="btnPencil" class="btn-tool tool-active">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                    Lápiz
+                    Lápiz (B)
                 </button>
                 <button id="btnBucket" class="btn-tool">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z"></path><path d="m5 2 5 5"></path><path d="M2 13h15"></path><path d="M22 20a2 2 0 1 1-4 0c0-1.6 2-4 2-4s2 2.4 2 4Z"></path></svg>
-                    Relleno
+                    Relleno (G)
                 </button>
                 <button id="btnEraser" class="btn-tool">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"></path><path d="M22 21H7"></path><path d="m5 11 9 9"></path></svg>
-                    Borrar
+                    Borrar (E)
                 </button>
                 <button id="btnSelect" class="btn-tool">
                     <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="4 4"></rect></svg>
-                    Seleccionar
+                    Seleccionar (S)
                 </button>
             </div>
 
             <!-- Submenú dinámico para copia y transformación -->
             <div class="advanced-actions">
-                <label style="font-size:0.68rem;">Modición y Espejos</label>
+                <label style="font-size:0.68rem;">Edición y Espejos</label>
                 <div class="tools-grid">
                     <button id="btnCopy" class="btn-tool" disabled>
                         <svg class="svg-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -449,6 +474,7 @@
 
         <!-- Panel Central: Lienzo de Trabajo -->
         <div class="viewport-container">
+            <div id="toolBadge" class="active-tool-badge">HERRAMIENTA: LÁPIZ</div>
             <canvas id="miyukiCanvas"></canvas>
         </div>
 
@@ -543,6 +569,33 @@
             dije: { cols: 25, rows: 25 }
         };
 
+        function setTool(toolName) {
+            currentTool = toolName;
+            document.querySelectorAll('.tools-grid .btn-tool').forEach(btn => btn.classList.remove('tool-active'));
+            
+            const toolButtons = {
+                pencil: 'btnPencil',
+                bucket: 'btnBucket',
+                eraser: 'btnEraser',
+                select: 'btnSelect',
+                paste: 'btnPaste'
+            };
+
+            if (toolButtons[toolName]) {
+                const activeBtn = document.getElementById(toolButtons[toolName]);
+                if (activeBtn) activeBtn.classList.add('tool-active');
+            }
+
+            const toolLabels = {
+                pencil: 'HERRAMIENTA: LÁPIZ',
+                bucket: 'HERRAMIENTA: RELLENO',
+                eraser: 'HERRAMIENTA: BORRADOR',
+                select: 'HERRAMIENTA: SELECCIÓN',
+                paste: 'HERRAMIENTA: PEGAR'
+            };
+            document.getElementById('toolBadge').textContent = toolLabels[toolName] || 'HERRAMIENTA ACTIVA';
+        }
+
         function renderPalette() {
             const container = document.getElementById('paletteContainer');
             container.innerHTML = '';
@@ -600,7 +653,6 @@
         }
 
         function draw() {
-            // Fondo general del lienzo suavizado
             ctx.fillStyle = '#eedfcc';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -783,107 +835,139 @@
                 }
             } else if (type === 'chevron') {
                 for (let c = 0; c < cols; c++) {
-                    let r = midR + (c % 6 < 3 ? (c % 3) : (2 - (c % 3))) - 1;
-                    if (r >= 0 && r < rows) grid[r][c] = selectedColor;
+                    let offset = c % (rows * 2);
+                    let r = offset < rows ? offset : (rows * 2 - offset - 1);
+                    if (r < rows) grid[r][c] = selectedColor;
                 }
             } else if (type === 'flower') {
-                const offsets = [[-2,0], [-2,1], [-1,2], [0,2], [1,2], [2,1], [2,0], [2,-1], [1,-2], [0,-2], [-1,-2], [-2,-1]];
-                offsets.forEach(([dr, dc]) => {
-                    if (midR + dr >= 0 && midR + dr < rows && midC + dc >= 0 && midC + dc < cols) grid[midR + dr][midC + dc] = selectedColor;
-                });
+                const radius = Math.min(midR, midC, 6);
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        let dist = Math.hypot(r - midR, c - midC);
+                        if (Math.abs(dist - radius) < 1.5 || dist < 1.5) {
+                            grid[r][c] = selectedColor;
+                        }
+                    }
+                }
             } else if (type === 'heart') {
-                const heartCoords = [[-2,-1], [-2,1], [-3,-2], [-3,2], [-2,-3], [-2,3], [-1,-3], [-1,3], [0,-2], [0,2], [1,-1], [1,1], [2,0]];
-                heartCoords.forEach(([dr, dc]) => {
-                    if (midR + dr >= 0 && midR + dr < rows && midC + dc >= 0 && midC + dc < cols) grid[midR + dr][midC + dc] = selectedColor;
-                });
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        let x = (c - midC) / (cols / 4);
+                        let y = -(r - midR) / (rows / 4);
+                        let formula = Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y;
+                        if (formula <= 0) {
+                            grid[r][c] = selectedColor;
+                        }
+                    }
+                }
             }
-
             draw();
             updateCalculations();
         }
 
-        function saveDesign() {
-            const nameInput = document.getElementById('designName');
-            const name = nameInput.value.trim();
-            if (!name) return;
-
-            let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
-            designs[name] = {
-                product: document.getElementById('productSelect').value,
-                technique: document.getElementById('techniqueSelect').value,
-                grid: grid
-            };
-
-            localStorage.setItem('miyuki_saved_designs', JSON.stringify(designs));
-            nameInput.value = '';
-            renderSavedDesigns();
-        }
-
-        function loadDesign(name) {
-            let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
-            const design = designs[name];
-            if (design) {
-                document.getElementById('productSelect').value = design.product;
-                document.getElementById('techniqueSelect').value = design.technique;
-                initGrid();
-                grid = design.grid;
-                draw();
-                updateCalculations();
-            }
-        }
-
-        function deleteDesign(name) {
-            let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
-            delete designs[name];
-            localStorage.setItem('miyuki_saved_designs', JSON.stringify(designs));
-            renderSavedDesigns();
-        }
-
-        function renderSavedDesigns() {
-            const container = document.getElementById('savedDesignsList');
-            let designs = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || {};
-            const keys = Object.keys(designs);
-
-            if (keys.length === 0) {
-                container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Sin diseños guardados.</span>';
-                return;
-            }
-
-            container.innerHTML = '';
-            keys.forEach(name => {
-                const item = document.createElement('div');
-                item.className = 'design-item';
-                item.innerHTML = `
-                    <span>${name}</span>
-                    <div>
-                        <button style="background:var(--gold-primary); border:none; color:#fff; border-radius:4px; padding:2px 6px; cursor:pointer;" onclick="loadDesign('${name}')">📂</button>
-                        <button style="background:#e74c3c; border:none; color:#fff; border-radius:4px; padding:2px 6px; cursor:pointer;" onclick="deleteDesign('${name}')">🗑️</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
         function updateCalculations() {
             let totalBeads = 0;
-            let totalPrice = 0;
+            let materialCost = 0;
+            const product = document.getElementById('productSelect').value;
 
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    let bead = grid[r][c];
+                    const bead = grid[r][c];
                     if (bead) {
                         totalBeads++;
-                        totalPrice += bead.price;
+                        materialCost += (bead.price || 0.01);
                     }
                 }
             }
 
-            const product = document.getElementById('productSelect').value;
-            totalPrice += COSTS.baseProducts[product] || 0;
+            const baseCost = COSTS.baseProducts[product] || 2.0;
+            const total = baseCost + materialCost;
 
             document.getElementById('totalBeads').textContent = totalBeads;
-            document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+            document.getElementById('totalPrice').textContent = `$${total.toFixed(2)}`;
         }
+
+        function saveCurrentDesign() {
+            const nameInput = document.getElementById('designName');
+            const name = nameInput.value.trim() || `Diseño ${new Date().toLocaleTimeString()}`;
+            
+            const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
+            saved.push({
+                name,
+                product: document.getElementById('productSelect').value,
+                technique: document.getElementById('techniqueSelect').value,
+                grid,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('miyuki_saved_designs', JSON.stringify(saved));
+            nameInput.value = '';
+            renderSavedDesignsList();
+        }
+
+        function renderSavedDesignsList() {
+            const listContainer = document.getElementById('savedDesignsList');
+            const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
+            listContainer.innerHTML = '';
+
+            saved.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'design-item';
+                div.innerHTML = `
+                    <span><strong>${item.name}</strong> (${item.product})</span>
+                    <button onclick="loadDesign(${index})">Cargar</button>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        window.loadDesign = function(index) {
+            const saved = JSON.parse(localStorage.getItem('miyuki_saved_designs')) || [];
+            const design = saved[index];
+            if (!design) return;
+
+            document.getElementById('productSelect').value = design.product;
+            document.getElementById('techniqueSelect').value = design.technique;
+            
+            const prod = PRODUCT_SIZES[design.product];
+            cols = prod.cols;
+            rows = prod.rows;
+
+            canvas.width = cols * beadSize + (design.technique === 'peyote' ? beadSize / 2 : 0);
+            canvas.height = rows * beadSize + (design.technique === 'brick' ? beadSize / 2 : 0);
+
+            grid = design.grid;
+            draw();
+            updateCalculations();
+        };
+
+        // --- Event Listeners & Controles ---
+        document.getElementById('btnPencil').onclick = () => setTool('pencil');
+        document.getElementById('btnBucket').onclick = () => setTool('bucket');
+        document.getElementById('btnEraser').onclick = () => setTool('eraser');
+        document.getElementById('btnSelect').onclick = () => setTool('select');
+
+        document.getElementById('btnCopy').onclick = copySelectedArea;
+        document.getElementById('btnPaste').onclick = () => setTool('paste');
+
+        document.getElementById('btnMirrorH').onclick = () => {
+            mirrorH = !mirrorH;
+            document.getElementById('btnMirrorH').classList.toggle('mirror-active', mirrorH);
+        };
+
+        document.getElementById('btnMirrorV').onclick = () => {
+            mirrorV = !mirrorV;
+            document.getElementById('btnMirrorV').classList.toggle('mirror-active', mirrorV);
+        };
+
+        document.getElementById('btnClear').onclick = () => {
+            if (confirm("¿Estás seguro de que deseas borrar todo el lienzo?")) {
+                initGrid();
+            }
+        };
+
+        document.getElementById('productSelect').onchange = initGrid;
+        document.getElementById('techniqueSelect').onchange = initGrid;
+        document.getElementById('templateSelect').onchange = (e) => applyTemplate(e.target.value);
 
         document.getElementById('tabDelica').onclick = () => {
             currentTypeFilter = 'delica';
@@ -901,73 +985,55 @@
             renderPalette();
         };
 
+        document.getElementById('btnSaveDesign').onclick = saveCurrentDesign;
+
+        document.getElementById('btnSendWhatsapp').onclick = () => {
+            const product = document.getElementById('productSelect').value.toUpperCase();
+            const beads = document.getElementById('totalBeads').textContent;
+            const price = document.getElementById('totalPrice').textContent;
+            
+            const message = `Hola CINQUE Studio! 👋 Quisiera solicitar la cotización de mi diseño:%0A` +
+                            `• *Producto:* ${product}%0A` +
+                            `• *Total Cuentas:* ${beads}%0A` +
+                            `• *Precio Estimado:* ${price}`;
+            
+            window.open(`https://wa.me/?text=${message}`, '_blank');
+        };
+
+        // Eventos táctiles y de ratón
         canvas.addEventListener('mousedown', handlePointerDown);
         canvas.addEventListener('mousemove', handlePointerMove);
         window.addEventListener('mouseup', () => isDrawing = false);
 
-        canvas.addEventListener('touchstart', (e) => { handlePointerDown(e); e.preventDefault(); });
-        canvas.addEventListener('touchmove', (e) => { handlePointerMove(e); e.preventDefault(); });
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handlePointerDown(e);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            handlePointerMove(e);
+        }, { passive: false });
+
         window.addEventListener('touchend', () => isDrawing = false);
 
-        document.getElementById('productSelect').addEventListener('change', initGrid);
-        document.getElementById('techniqueSelect').addEventListener('change', () => { initGrid(); draw(); });
-        document.getElementById('templateSelect').addEventListener('change', (e) => applyTemplate(e.target.value));
+        // Atajos de teclado para UX fluida
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+            
+            const key = e.key.toLowerCase();
+            if (key === 'b') setTool('pencil');
+            if (key === 'g') setTool('bucket');
+            if (key === 'e') setTool('eraser');
+            if (key === 's') setTool('select');
+            if (e.ctrlKey && key === 'c') copySelectedArea();
+            if (e.ctrlKey && key === 'v' && clipboard) setTool('paste');
+        });
 
-        document.getElementById('btnPencil').onclick = () => setTool('pencil', 'btnPencil');
-        document.getElementById('btnBucket').onclick = () => setTool('bucket', 'btnBucket');
-        document.getElementById('btnEraser').onclick = () => setTool('eraser', 'btnEraser');
-        document.getElementById('btnSelect').onclick = () => setTool('select', 'btnSelect');
-        document.getElementById('btnCopy').onclick = copySelectedArea;
-        document.getElementById('btnPaste').onclick = () => setTool('paste', 'btnPaste');
-        
-        document.getElementById('btnMirrorH').onclick = () => {
-            mirrorH = !mirrorH;
-            document.getElementById('btnMirrorH').classList.toggle('mirror-active', mirrorH);
-        };
-
-        document.getElementById('btnMirrorV').onclick = () => {
-            mirrorV = !mirrorV;
-            document.getElementById('btnMirrorV').classList.toggle('mirror-active', mirrorV);
-        };
-
-        document.getElementById('btnSaveDesign').onclick = saveDesign;
-
-        document.getElementById('btnClear').onclick = () => { 
-            grid = Array(rows).fill(null).map(() => Array(cols).fill(null)); 
-            selectionStart = null;
-            selectionEnd = null;
-            draw(); 
-            updateCalculations(); 
-        };
-
-        function setTool(tool, btnId) {
-            currentTool = tool;
-            document.querySelectorAll('.tools-grid .btn-tool').forEach(b => b.classList.remove('tool-active'));
-            if(btnId) document.getElementById(btnId).classList.add('tool-active');
-            if(tool !== 'select' && tool !== 'paste') {
-                selectionStart = null;
-                selectionEnd = null;
-                draw();
-            }
-        }
-
-        document.getElementById('btnSendWhatsapp').onclick = () => {
-            const product = document.getElementById('productSelect').options[document.getElementById('productSelect').selectedIndex].text;
-            const beads = document.getElementById('totalBeads').textContent;
-            const price = document.getElementById('totalPrice').textContent;
-
-            const text = `¡Hola *CINQUE*! Quisiera cotizar el siguiente diseño personalizado:%0A%0A` +
-                         `📌 *Producto:* ${product}%0A` +
-                         `🧩 *Total Cuentas:* ${beads}%0A` +
-                         `💰 *Cotización Estimada:* ${price}%0A%0A` +
-                         `Les adjunto el patrón diseñado desde la app.`;
-
-            window.open(`https://api.whatsapp.com/send?phone=5491100000000&text=${text}`, '_blank');
-        };
-
+        // Inicialización de la App
         renderPalette();
-        renderSavedDesigns();
         initGrid();
+        renderSavedDesignsList();
     </script>
 </body>
 </html>
