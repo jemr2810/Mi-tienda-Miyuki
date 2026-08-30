@@ -116,8 +116,15 @@
 
         .btn-group {
             display: flex;
+            flex-wrap: wrap;
             gap: 5px;
             margin-top: 10px;
+        }
+
+        .btn-group button {
+            flex: 1 1 45%;
+            font-size: 0.8rem;
+            padding: 8px 4px;
         }
 
         button {
@@ -139,7 +146,10 @@
             font-size: 1rem;
         }
 
-        .tool-active { outline: 2px solid var(--accent); }
+        .tool-active { 
+            outline: 2px solid var(--accent) !important;
+            background-color: #34495e !important;
+        }
         
         .price-tag {
             font-size: 1.4rem;
@@ -185,7 +195,10 @@
                 <button id="btnPencil" class="tool-active">✏️ Lápiz</button>
                 <button id="btnBucket">🪣 Relleno</button>
                 <button id="btnEraser">🧹 Borrar</button>
-                <button id="btnClear">🗑️ Limpiar</button>
+                <button id="btnSelect">🔳 Seleccionar</button>
+                <button id="btnCopy" disabled>📋 Copiar</button>
+                <button id="btnPaste" disabled>📌 Pegar</button>
+                <button id="btnClear" style="flex: 1 1 100%; background: #c0392b;">🗑️ Limpiar Todo</button>
             </div>
         </div>
 
@@ -234,9 +247,8 @@
         const canvas = document.getElementById('miyukiCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Catálogo Completo Precargado (26 Colores de Facturas 1 y 2)
+        // Catálogo Completo Precargado
         const DEFAULT_PALETTE = [
-            // Delica 11/0 - Factura 1
             { code: "DB0351", name: "Blanco mate", hex: "#F8F9FA", price: 0.01 },
             { code: "DB1493-1", name: "Opaque Lt Salmon", hex: "#FFA089", price: 0.01 },
             { code: "DB0734", name: "Op Chocolate Brown", hex: "#4A2E2B", price: 0.01 },
@@ -245,7 +257,6 @@
             { code: "DB0310", name: "Jet Black Mate", hex: "#1A1A1A", price: 0.01 },
             { code: "DB2366-TB", name: "Duracoat Opq Soft", hex: "#E6C280", price: 0.015 },
             { code: "DB1585", name: "Matte Op Avocado", hex: "#568203", price: 0.01 },
-            // Rocalla 11/0 - Factura 1
             { code: "11-9401F", name: "Rocalla Mat Black", hex: "#121212", price: 0.008 },
             { code: "11-92006", name: "Rocalla Mat Mtlc Dk", hex: "#4A4A4A", price: 0.008 },
             { code: "11-9402", name: "Rocalla Op White", hex: "#FFFFFF", price: 0.008 },
@@ -253,14 +264,12 @@
             { code: "11-9404", name: "Rocalla Op Yellow", hex: "#FBC02D", price: 0.008 },
             { code: "11-9593", name: "Rocalla Dk Beige", hex: "#D7BDE2", price: 0.008 },
             { code: "11-9457L", name: "Rocalla Met Bronze", hex: "#8C6239", price: 0.009 },
-            // Delica 11/0 - Factura 2
             { code: "DB0721", name: "Opaque Yellow", hex: "#FFD700", price: 0.01 },
             { code: "DB0200", name: "Opaque Chalk White", hex: "#FFFFFF", price: 0.01 },
             { code: "DB1832", name: "Galvanized Gold", hex: "#D4AF37", price: 0.018 },
             { code: "DB0726", name: "Opaque Dark Blue", hex: "#002366", price: 0.01 },
             { code: "DB0727", name: "Opaque Light Siam", hex: "#E32636", price: 0.01 },
             { code: "DB0725", name: "Opaque Light Blue", hex: "#87CEEB", price: 0.01 },
-            // Rocalla 8/0 - Factura 2
             { code: "8-9404", name: "Rocalla 8/0 Op Yellow", hex: "#FFEE55", price: 0.012 },
             { code: "8-9402", name: "Rocalla 8/0 Op White", hex: "#FAFAFA", price: 0.012 },
             { code: "8-9414", name: "Rocalla 8/0 Op Cobalt", hex: "#0047AB", price: 0.012 },
@@ -274,6 +283,11 @@
         let cols = 100, rows = 16, beadSize = 12;
         let grid = [];
         let isDrawing = false;
+
+        // Variables de selección / copia
+        let selectionStart = null;
+        let selectionEnd = null;
+        let clipboard = null; // Matriz con el patrón copiado
 
         const COSTS = { baseProducts: { anillo: 1.5, pulsera: 3.0, dije: 2.0 } };
         const PRODUCT_SIZES = {
@@ -307,13 +321,33 @@
             cols = PRODUCT_SIZES[product].cols;
             rows = PRODUCT_SIZES[product].rows;
 
-            // Ajuste del tamaño del lienzo según la técnica
             canvas.width = cols * beadSize + (technique === 'peyote' ? beadSize / 2 : 0);
             canvas.height = rows * beadSize + (technique === 'brick' ? beadSize / 2 : 0);
 
             grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
+            selectionStart = null;
+            selectionEnd = null;
             draw();
             updateCalculations();
+        }
+
+        function getBeadCoords(x, y) {
+            const technique = document.getElementById('techniqueSelect').value;
+            let r, c;
+
+            if (technique === 'brick') {
+                c = Math.floor(x / beadSize);
+                let offsetY = (c % 2 !== 0) ? beadSize / 2 : 0;
+                r = Math.floor((y - offsetY) / beadSize);
+            } else if (technique === 'peyote') {
+                r = Math.floor(y / beadSize);
+                let offsetX = (r % 2 !== 0) ? beadSize / 2 : 0;
+                c = Math.floor((x - offsetX) / beadSize);
+            } else {
+                r = Math.floor(y / beadSize);
+                c = Math.floor(x / beadSize);
+            }
+            return { r, c };
         }
 
         function draw() {
@@ -325,11 +359,10 @@
                     let x = c * beadSize;
                     let y = r * beadSize;
 
-                    // Desplazamientos según la orientación de la técnica
                     if (technique === 'peyote' && r % 2 !== 0) {
-                        x += beadSize / 2; // Desplazamiento horizontal por filas
+                        x += beadSize / 2;
                     } else if (technique === 'brick' && c % 2 !== 0) {
-                        y += beadSize / 2; // Desplazamiento vertical por columnas
+                        y += beadSize / 2;
                     }
 
                     ctx.beginPath();
@@ -345,6 +378,27 @@
                         ctx.stroke();
                     }
                 }
+            }
+
+            // Dibujar rectángulo de selección si existe
+            if (selectionStart && selectionEnd) {
+                const minR = Math.min(selectionStart.r, selectionEnd.r);
+                const maxR = Math.max(selectionStart.r, selectionEnd.r);
+                const minC = Math.min(selectionStart.c, selectionEnd.c);
+                const maxC = Math.max(selectionStart.c, selectionEnd.c);
+
+                const x = minC * beadSize;
+                const y = minR * beadSize;
+                const w = (maxC - minC + 1) * beadSize;
+                const h = (maxR - minR + 1) * beadSize;
+
+                ctx.strokeStyle = '#0066ff';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+                ctx.strokeRect(x, y, w, h);
+                ctx.fillStyle = 'rgba(0, 102, 255, 0.15)';
+                ctx.fillRect(x, y, w, h);
+                ctx.setLineDash([]);
             }
         }
 
@@ -366,41 +420,86 @@
             fill(r, c);
         }
 
-        function handleAction(e) {
+        function handlePointerDown(e) {
+            isDrawing = true;
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            const x = clientX - rect.left;
-            const y = clientY - rect.top;
+            const coords = getBeadCoords(clientX - rect.left, clientY - rect.top);
 
-            const technique = document.getElementById('techniqueSelect').value;
-            let r, c;
-
-            if (technique === 'brick') {
-                c = Math.floor(x / beadSize);
-                let offsetY = (c % 2 !== 0) ? beadSize / 2 : 0;
-                r = Math.floor((y - offsetY) / beadSize);
-            } else if (technique === 'peyote') {
-                r = Math.floor(y / beadSize);
-                let offsetX = (r % 2 !== 0) ? beadSize / 2 : 0;
-                c = Math.floor((x - offsetX) / beadSize);
-            } else {
-                // Loom (Loom Weaving / Telar)
-                r = Math.floor(y / beadSize);
-                c = Math.floor(x / beadSize);
-            }
-
-            if (r >= 0 && r < rows && c >= 0 && c < cols) {
-                if (currentTool === 'pencil') {
-                    grid[r][c] = selectedColor;
+            if (coords.r >= 0 && coords.r < rows && coords.c >= 0 && coords.c < cols) {
+                if (currentTool === 'select') {
+                    selectionStart = coords;
+                    selectionEnd = coords;
+                    document.getElementById('btnCopy').disabled = false;
+                } else if (currentTool === 'paste' && clipboard) {
+                    pasteClipboard(coords.r, coords.c);
+                } else if (currentTool === 'pencil') {
+                    grid[coords.r][coords.c] = selectedColor;
                 } else if (currentTool === 'eraser') {
-                    grid[r][c] = null;
+                    grid[coords.r][coords.c] = null;
                 } else if (currentTool === 'bucket') {
-                    floodFill(r, c, selectedColor);
+                    floodFill(coords.r, coords.c, selectedColor);
                 }
                 draw();
                 updateCalculations();
+            }
+        }
+
+        function handlePointerMove(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const coords = getBeadCoords(clientX - rect.left, clientY - rect.top);
+
+            if (coords.r >= 0 && coords.r < rows && coords.c >= 0 && coords.c < cols) {
+                if (currentTool === 'select') {
+                    selectionEnd = coords;
+                } else if (currentTool === 'pencil') {
+                    grid[coords.r][coords.c] = selectedColor;
+                } else if (currentTool === 'eraser') {
+                    grid[coords.r][coords.c] = null;
+                }
+                draw();
+                updateCalculations();
+            }
+        }
+
+        function copySelectedArea() {
+            if (!selectionStart || !selectionEnd) return;
+            const minR = Math.min(selectionStart.r, selectionEnd.r);
+            const maxR = Math.max(selectionStart.r, selectionEnd.r);
+            const minC = Math.min(selectionStart.c, selectionEnd.c);
+            const maxC = Math.max(selectionStart.c, selectionEnd.c);
+
+            clipboard = [];
+            for (let r = minR; r <= maxR; r++) {
+                let row = [];
+                for (let c = minC; c <= maxC; c++) {
+                    row.push(grid[r][c]);
+                }
+                clipboard.push(row);
+            }
+            document.getElementById('btnPaste').disabled = false;
+            alert('¡Patrón copiado! Haz clic en "Pegar" y luego selecciona en el lienzo dónde quieres aplicarlo.');
+        }
+
+        function pasteClipboard(startR, startC) {
+            if (!clipboard) return;
+            const clipRows = clipboard.length;
+            const clipCols = clipboard[0].length;
+
+            for (let r = 0; r < clipRows; r++) {
+                for (let c = 0; c < clipCols; c++) {
+                    let targetR = startR + r;
+                    let targetC = startC + c;
+                    if (targetR < rows && targetC < cols) {
+                        grid[targetR][targetC] = clipboard[r][c];
+                    }
+                }
             }
         }
 
@@ -433,27 +532,43 @@
             document.getElementById('beadBreakdown').innerHTML = breakdownHTML || '<em>Sin cuentas dibujadas</em>';
         }
 
-        // Eventos de Dibujo
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; handleAction(e); });
-        canvas.addEventListener('mousemove', (e) => { if (isDrawing) handleAction(e); });
+        // Eventos de Mouse/Touch
+        canvas.addEventListener('mousedown', handlePointerDown);
+        canvas.addEventListener('mousemove', handlePointerMove);
         window.addEventListener('mouseup', () => isDrawing = false);
 
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; handleAction(e); e.preventDefault(); });
-        canvas.addEventListener('touchmove', (e) => { if (isDrawing) handleAction(e); e.preventDefault(); });
+        canvas.addEventListener('touchstart', (e) => { handlePointerDown(e); e.preventDefault(); });
+        canvas.addEventListener('touchmove', (e) => { handlePointerMove(e); e.preventDefault(); });
         window.addEventListener('touchend', () => isDrawing = false);
 
         document.getElementById('productSelect').addEventListener('change', initGrid);
         document.getElementById('techniqueSelect').addEventListener('change', () => { initGrid(); draw(); });
 
+        // Botones de herramientas
         document.getElementById('btnPencil').onclick = () => setTool('pencil', 'btnPencil');
         document.getElementById('btnBucket').onclick = () => setTool('bucket', 'btnBucket');
         document.getElementById('btnEraser').onclick = () => setTool('eraser', 'btnEraser');
-        document.getElementById('btnClear').onclick = () => { grid = Array(rows).fill(null).map(() => Array(cols).fill(null)); draw(); updateCalculations(); };
+        document.getElementById('btnSelect').onclick = () => setTool('select', 'btnSelect');
+        document.getElementById('btnCopy').onclick = copySelectedArea;
+        document.getElementById('btnPaste').onclick = () => setTool('paste', 'btnPaste');
+        
+        document.getElementById('btnClear').onclick = () => { 
+            grid = Array(rows).fill(null).map(() => Array(cols).fill(null)); 
+            selectionStart = null;
+            selectionEnd = null;
+            draw(); 
+            updateCalculations(); 
+        };
 
         function setTool(tool, btnId) {
             currentTool = tool;
             document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('tool-active'));
-            document.getElementById(btnId).classList.add('tool-active');
+            if(btnId) document.getElementById(btnId).classList.add('tool-active');
+            if(tool !== 'select' && tool !== 'paste') {
+                selectionStart = null;
+                selectionEnd = null;
+                draw();
+            }
         }
 
         // Guardar Nuevo Color
@@ -473,7 +588,7 @@
             }
         };
 
-        // Restablecer catálogo original
+        // Restablecer catálogo
         document.getElementById('btnResetPalette').onclick = () => {
             if (confirm("¿Deseas restablecer el catálogo a la lista original de 26 colores?")) {
                 palette = DEFAULT_PALETTE;
