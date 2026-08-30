@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseñador Miyuki 2D</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --panel-bg: #ffffff;
+            --primary: #2c3e50;
+            --accent: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: var(--bg-color);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { margin-bottom: 5px; font-size: 1.5rem; text-align: center; }
+        p { margin-top: 0; color: #666; font-size: 0.9rem; text-align: center; }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .controls-panel, .summary-panel {
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .canvas-container {
+            background: #e0e0e0;
+            padding: 10px;
+            border-radius: 8px;
+            overflow: auto;
+            max-width: 100%;
+            max-height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            background-color: #ffffff;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        select, input[type="color"], button {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        button.btn-whatsapp {
+            background-color: var(--accent);
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        .price-tag {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        .tool-active {
+            outline: 2px solid var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Diseñador Miyuki 2D</h1>
+    <p>Crea tu diseño personalizado paso a paso</p>
+
+    <div class="container">
+        <div class="controls-panel">
+            <div class="form-group">
+                <label for="productSelect">1. Tipo de Producto:</label>
+                <select id="productSelect">
+                    <option value="anillo">Anillo (6x50 cuentas)</option>
+                    <option value="pulsera" selected>Pulsera (16x100 cuentas)</option>
+                    <option value="dije">Dije / Parche (25x25 cuentas)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="techniqueSelect">2. Técnica de Tejido:</label>
+                <select id="techniqueSelect">
+                    <option value="grid">Telar / Cuadrícula Recta</option>
+                    <option value="peyote">Peyote / Brick Stitch (Intercalado)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>3. Color de Cuenta Miyuki:</label>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="colorPicker" value="#db0010">
+                    <span id="colorHexCode">#DB0010</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="btnPencil" class="tool-active">✏️ Lápiz</button>
+                <button id="btnEraser">🧹 Borrador</button>
+                <button id="btnClear">🗑️ Limpiar</button>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="miyukiCanvas"></canvas>
+        </div>
+
+        <div class="summary-panel">
+            <h3>Resumen del Pedido</h3>
+            <p>Total Cuentas Utilizadas: <strong id="totalBeads">0</strong></p>
+            <hr>
+            <label>Costo Estimado:</label>
+            <div class="price-tag" id="totalPrice">$0.00</div>
+            
+            <button class="btn-whatsapp" id="btnSendWhatsapp">📲 Enviar Pedido por WhatsApp</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de lienzo y estado
+        const canvas = document.getElementById('miyukiCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Referencias de UI
+        const productSelect = document.getElementById('productSelect');
+        const techniqueSelect = document.getElementById('techniqueSelect');
+        const colorPicker = document.getElementById('colorPicker');
+        const colorHexCode = document.getElementById('colorHexCode');
+        const btnPencil = document.getElementById('btnPencil');
+        const btnEraser = document.getElementById('btnEraser');
+        const btnClear = document.getElementById('btnClear');
+        const totalBeadsEl = document.getElementById('totalBeads');
+        const totalPriceEl = document.getElementById('totalPrice');
+        const btnSendWhatsapp = document.getElementById('btnSendWhatsapp');
+
+        // Variables globales
+        let cols = 100;
+        let rows = 16;
+        const beadSize = 12; // Tamaño visual de cada cuenta en px
+        let grid = [];
+        let currentTool = 'pencil'; // 'pencil' o 'eraser'
+        let isDrawing = false;
+
+        // Configuración de Costos Base (Valores modificables)
+        const COSTS = {
+            beadUnitPrice: 0.01, // Costo promedio por cuenta ($)
+            baseProducts: {
+                anillo: 1.5,   // Herrajes/Base Anillo ($)
+                pulsera: 3.0,  // Cierre/Hilo Pulsera ($)
+                dije: 2.0      // Argolla/Cadena Dije ($)
+            }
+        };
+
+        const PRODUCT_SIZES = {
+            anillo: { cols: 50, rows: 6 },
+            pulsera: { cols: 100, rows: 16 },
+            dije: { cols: 25, rows: 25 }
+        };
+
+        // Inicialización
+        function initGrid() {
+            const size = PRODUCT_SIZES[productSelect.value];
+            cols = size.cols;
+            rows = size.rows;
+
+            canvas.width = cols * beadSize + (techniqueSelect.value === 'peyote' ? beadSize / 2 : 0);
+            canvas.height = rows * beadSize;
+
+            grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
+            draw();
+            updateCalculations();
+        }
+
+        // Renderizado del Canvas 2D
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const isPeyote = techniqueSelect.value === 'peyote';
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let x = c * beadSize;
+                    let y = r * beadSize;
+
+                    // Desplazamiento alternado para técnica Peyote / Brick Stitch
+                    if (isPeyote && r % 2 !== 0) {
+                        x += beadSize / 2;
+                    }
+
+                    // Renderizar celda / cuenta
+                    ctx.beginPath();
+                    ctx.rect(x, y, beadSize - 1, beadSize - 1);
+
+                    if (grid[r][c]) {
+                        ctx.fillStyle = grid[r][c];
+                        ctx.fill();
+                    } else {
+                        ctx.fillStyle = '#f0f0f0';
+                        ctx.fill();
+                        ctx.strokeStyle = '#ddd';
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Interacción Táctil y Mouse
+        function handleAction(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+
+            let r = Math.floor(y / beadSize);
+            let isPeyote = techniqueSelect.value === 'peyote';
+            let offsetX = (isPeyote && r % 2 !== 0) ? beadSize / 2 : 0;
+            let c = Math.floor((x - offsetX) / beadSize);
+
+            if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                grid[r][c] = currentTool === 'pencil' ? colorPicker.value : null;
+                draw();
+                updateCalculations();
+            }
+        }
+
+        // Eventos de dibujo
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; handleAction(e); });
+        canvas.addEventListener('mousemove', (e) => { if (isDrawing) handleAction(e); });
+        window.addEventListener('mouseup', () => isDrawing = false);
+
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; handleAction(e); e.preventDefault(); });
+        canvas.addEventListener('touchmove', (e) => { if (isDrawing) handleAction(e); e.preventDefault(); });
+        window.addEventListener('touchend', () => isDrawing = false);
+
+        // Actualización de Conteo y Precio
+        function updateCalculations() {
+            let usedBeads = 0;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c]) usedBeads++;
+                }
+            }
+
+            const baseCost = COSTS.baseProducts[productSelect.value] || 0;
+            const total = (usedBeads * COSTS.beadUnitPrice) + baseCost;
+
+            totalBeadsEl.textContent = usedBeads;
+            totalPriceEl.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Eventos de interfaz
+        productSelect.addEventListener('change', initGrid);
+        techniqueSelect.addEventListener('change', draw);
+        colorPicker.addEventListener('input', (e) => colorHexCode.textContent = e.target.value.toUpperCase());
+
+        btnPencil.addEventListener('click', () => {
+            currentTool = 'pencil';
+            btnPencil.classList.add('tool-active');
+            btnEraser.classList.remove('tool-active');
+        });
+
+        btnEraser.addEventListener('click', () => {
+            currentTool = 'eraser';
+            btnEraser.classList.add('tool-active');
+            btnPencil.classList.remove('tool-active');
+        });
+
+        btnClear.addEventListener('click', () => {
+            grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
+            draw();
+            updateCalculations();
+        });
+
+        // Generación de Pedido por WhatsApp
+        btnSendWhatsapp.addEventListener('click', () => {
+            const product = productSelect.options[productSelect.selectedIndex].text;
+            const technique = techniqueSelect.options[techniqueSelect.selectedIndex].text;
+            const beads = totalBeadsEl.textContent;
+            const price = totalPriceEl.textContent;
+
+            const text = `¡Hola! Quisiera realizar el siguiente pedido personalizado:%0A%0A` +
+                         `📌 *Producto:* ${product}%0A` +
+                         `🧵 *Técnica:* ${technique}%0A` +
+                         `🧩 *Total de Cuentas:* ${beads}%0A` +
+                         `💰 *Precio Estimado:* ${price}%0A%0A` +
+                         `Adjunto la imagen de mi diseño.`;
+
+            // Número de WhatsApp (reemplazar con el tuyo)
+            const phone = "5491100000000"; 
+            window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${text}`, '_blank');
+        });
+
+        // Arrancar la app
+        initGrid();
+    </script>
+</body>
+</html>
