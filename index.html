@@ -1,13 +1,572 @@
-if (currentTool === 'select') {
-                    selectionEnd = coords;
-                } else if (currentTool === 'pencil') {
-                    grid[coords.r][coords.c] = selectedColor;
-                } else if (currentTool === 'eraser') {
-                    grid[coords.r][coords.c] = null;
-                }
-                draw();
-                updateCalculations();
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseñador Custom CINQUE - Miyuki</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-content {
+            flex: 3;
+            min-width: 320px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        select, input, button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .btn-tool {
+            background: #f0f0f0;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+
+        .btn-tool:hover {
+            background: #e0e0e0;
+        }
+
+        .tool-active {
+            background: #333 !important;
+            color: #fff !important;
+            border-color: #333 !important;
+        }
+
+        .mirror-active {
+            background: #28a745 !important;
+            color: #fff !important;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: #eee;
+            font-weight: bold;
+        }
+
+        .tab.active {
+            background: #fff;
+            border-top: 2px solid #333;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-bottom: none;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid #eee;
+        }
+
+        .color-swatch {
+            width: 100%;
+            height: 35px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: inset 0 0 2px rgba(0,0,0,0.2);
+        }
+
+        .color-swatch.selected {
+            border-color: #000;
+            transform: scale(1.05);
+        }
+
+        .canvas-container {
+            overflow: auto;
+            max-width: 100%;
+            border: 1px solid #ddd;
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .stats-panel {
+            margin-top: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .saved-designs {
+            margin-top: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .design-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ebc57;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CINQUE - Diseñador de Patrones Miyuki</h1>
+    </header>
+
+    <div class="container">
+        <!-- Panel Lateral de Controles -->
+        <div class="sidebar">
+            <div class="control-group">
+                <label for="productSelect">Producto Base:</label>
+                <select id="productSelect">
+                    <option value="pulsera">Pulsera</option>
+                    <option value="collar">Collar</option>
+                    <option value="arete">Arete / Anillo</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="techniqueSelect">Técnica:</label>
+                <select id="techniqueSelect">
+                    <option value="peyote">Peyote (Ladrillo)</option>
+                    <option value="square">Puntada Cuadrada / Telar</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="templateSelect">Plantilla Predeterminada:</label>
+                <select id="templateSelect">
+                    <option value="none">Ninguna (Lienzo en blanco)</option>
+                    <option value="diamond">Rombo Central</option>
+                    <option value="chevron">Zigzag / Chevron</option>
+                    <option value="heart">Corazón</option>
+                    <option value="flower">Flor</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Herramientas:</label>
+                <div class="tools-grid">
+                    <button class="btn-tool tool-active" id="btnPencil">Lápiz</button>
+                    <button class="btn-tool" id="btnBucket">Relleno</button>
+                    <button class="btn-tool" id="btnEraser">Borrar</button>
+                    <button class="btn-tool" id="btnSelect">Seleccionar</button>
+                    <button class="btn-tool" id="btnCopy">Copiar</button>
+                    <button class="btn-tool" id="btnPaste" disabled>Pegar</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Espejado de Pegado:</label>
+                <div class="tools-grid" style="grid-template-columns: 1fr 1fr;">
+                    <button class="btn-tool" id="btnMirrorH" disabled>Espejo Horiz.</button>
+                    <button class="btn-tool" id="btnMirrorV" disabled>Espejo Vert.</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Paleta de Cuentas:</label>
+                <div class="tabs">
+                    <div class="tab active" id="tabDelica">Delica (Cilíndricas)</div>
+                    <div class="tab" id="tabRocalla">Rocalla (Redondas)</div>
+                </div>
+                <div class="palette-grid" id="paletteContainer"></div>
+            </div>
+
+            <div class="control-group">
+                <button id="btnClear" style="background:#dc3545; color:white; border:none; cursor:pointer;">Limpiar Lienzo</button>
+            </div>
+
+            <hr>
+
+            <div class="control-group">
+                <label for="designName">Guardar Diseño Local:</label>
+                <input type="text" id="designName" placeholder="Nombre del diseño...">
+                <button id="btnSaveDesign" style="background:#0d6efd; color:white; border:none; cursor:pointer; margin-top:5px;">Guardar</button>
+            </div>
+
+            <div class="control-group">
+                <label>Diseños Guardados:</label>
+                <div class="saved-designs" id="savedDesignsList"></div>
+            </div>
+        </div>
+
+        <!-- Área Principal de Dibujo -->
+        <div class="main-content">
+            <div class="canvas-container">
+                <canvas id="miyukiCanvas"></canvas>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <div>Cuentas Totales</div>
+                    <div class="stat-value" id="totalBeads">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>Cotización Estimada</div>
+                    <div class="stat-value" id="totalPrice">$0.00</div>
+                </div>
+            </div>
+
+            <button class="btn-whatsapp" id="btnSendWhatsapp" style="width: 100%; padding: 12px; font-size: 1rem;">
+                Enviar Cotización por WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configuración Base de Costos y Tamaños
+        const COSTS = {
+            baseProducts: {
+                pulsera: 5.00,
+                collar: 8.00,
+                arete: 3.50
+            },
+            gridDimensions: {
+                pulsera: { rows: 12, cols: 40 },
+                collar: { rows: 8, cols: 60 },
+                arete: { rows: 20, cols: 15 }
             }
+        };
+
+        const palette = [
+            { id: 'd1', name: 'Delica Blanco Matte', color: '#FFFFFF', type: 'delica', price: 0.02 },
+            { id: 'd2', name: 'Delica Negro Azabache', color: '#111111', type: 'delica', price: 0.02 },
+            { id: 'd3', name: 'Delica Dorado 24K', color: '#D4AF37', type: 'delica', price: 0.05 },
+            { id: 'd4', name: 'Delica Plata Brillante', color: '#C0C0C0', type: 'delica', price: 0.04 },
+            { id: 'd5', name: 'Delica Rojo Carmín', color: '#C70039', type: 'delica', price: 0.02 },
+            { id: 'd6', name: 'Delica Azul Cobalto', color: '#0047AB', type: 'delica', price: 0.02 },
+            { id: 'd7', name: 'Delica Verde Esmeralda', color: '#50C878', type: 'delica', price: 0.02 },
+            { id: 'd8', name: 'Delica Turquesa Light', color: '#40E0D0', type: 'delica', price: 0.02 },
+            { id: 'd9', name: 'Delica Rosa Pastel', color: '#FFB6C1', type: 'delica', price: 0.02 },
+            { id: 'd10', name: 'Delica Morado Místico', color: '#4B0082', type: 'delica', price: 0.03 },
+
+            { id: 'r1', name: 'Rocalla Blanco Perla', color: '#F0F8FF', type: 'rocalla', price: 0.01 },
+            { id: 'r2', name: 'Rocalla Negro Brillo', color: '#1C1C1C', type: 'rocalla', price: 0.01 },
+            { id: 'r3', name: 'Rocalla Oro Viejo', color: '#B8860B', type: 'rocalla', price: 0.03 },
+            { id: 'r4', name: 'Rocalla Rojo Rubí', color: '#900C3F', type: 'rocalla', price: 0.01 },
+            { id: 'r5', name: 'Rocalla Azul Marino', color: '#000080', type: 'rocalla', price: 0.01 },
+            { id: 'r6', name: 'Rocalla Verde Olivo', color: '#556B2F', type: 'rocalla', price: 0.01 },
+            { id: 'r7', name: 'Rocalla Naranja Coral', color: '#FF7F50', type: 'rocalla', price: 0.01 },
+            { id: 'r8', name: 'Rocalla Amarillo Sol', color: '#FFD700', type: 'rocalla', price: 0.01 }
+        ];
+
+        // Estado de la Aplicación
+        let canvas = document.getElementById('miyukiCanvas');
+        let ctx = canvas.getContext('2d');
+
+        let rows = 12;
+        let cols = 40;
+        const beadWidth = 16;
+        const beadHeight = 12;
+
+        let grid = [];
+        let currentTool = 'pencil';
+        let currentTypeFilter = 'delica';
+        let selectedColor = palette[0];
+
+        let isDrawing = false;
+        let selectionStart = null;
+        let selectionEnd = null;
+        let clipboard = null;
+        let mirrorH = false;
+        let mirrorV = false;
+
+        function initGrid() {
+            const product = document.getElementById('productSelect').value;
+            const dim = COSTS.gridDimensions[product] || { rows: 12, cols: 40 };
+            rows = dim.rows;
+            cols = dim.cols;
+
+            grid = Array(rows).fill(null).map(() => Array(cols).fill(null));
+
+            canvas.width = cols * beadWidth + 20;
+            canvas.height = rows * beadHeight + 30;
+
+            selectionStart = null;
+            selectionEnd = null;
+            draw();
+            updateCalculations();
+        }
+
+        function renderPalette() {
+            const container = document.getElementById('paletteContainer');
+            container.innerHTML = '';
+
+            const filtered = palette.filter(p => p.type === currentTypeFilter);
+            filtered.forEach(p => {
+                const swatch = document.createElement('div');
+                swatch.className = `color-swatch ${selectedColor.id === p.id ? 'selected' : ''}`;
+                swatch.style.backgroundColor = p.color;
+                swatch.title = `${p.name} ($${p.price.toFixed(2)})`;
+                swatch.addEventListener('click', () => {
+                    selectedColor = p;
+                    renderPalette();
+                });
+                container.appendChild(swatch);
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const technique = document.getElementById('techniqueSelect').value;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let x = c * beadWidth + 10;
+                    let y = r * beadHeight + 10;
+
+                    if (technique === 'peyote' && (r % 2 !== 0)) {
+                        x += beadWidth / 2;
+                    }
+
+                    const bead = grid[r][c];
+
+                    if (bead) {
+                        ctx.fillStyle = bead.color;
+                        if (bead.type === 'delica') {
+                            ctx.fillRect(x, y, beadWidth - 1, beadHeight - 1);
+                            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                            ctx.strokeRect(x, y, beadWidth - 1, beadHeight - 1);
+                        } else {
+                            ctx.beginPath();
+                            ctx.arc(x + beadWidth/2, y + beadHeight/2, beadHeight/2 - 1, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                            ctx.stroke();
+                        }
+                    } else {
+                        ctx.strokeStyle = '#e0e0e0';
+                        ctx.strokeRect(x, y, beadWidth - 1, beadHeight - 1);
+                    }
+                }
+            }
+
+            if (selectionStart && selectionEnd) {
+                const technique = document.getElementById('techniqueSelect').value;
+                const minR = Math.min(selectionStart.r, selectionEnd.r);
+                const maxR = Math.max(selectionStart.r, selectionEnd.r);
+                const minC = Math.min(selectionStart.c, selectionEnd.c);
+                const maxC = Math.max(selectionStart.c, selectionEnd.c);
+
+                const x1 = minC * beadWidth + 10;
+                const y1 = minR * beadHeight + 10;
+                const x2 = (maxC + 1) * beadWidth + (technique === 'peyote' ? beadWidth/2 : 0) + 10;
+                const y2 = (maxR + 1) * beadHeight + 10;
+
+                ctx.strokeStyle = '#007bff';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                ctx.setLineDash([]);
+                ctx.lineWidth = 1;
+            }
+        }
+
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const x = clientX - rect.left - 10;
+            const y = clientY - rect.top - 10;
+
+            const technique = document.getElementById('techniqueSelect').value;
+            let r = Math.floor(y / beadHeight);
+
+            let offset = 0;
+            if (technique === 'peyote' && (r % 2 !== 0)) {
+                offset = beadWidth / 2;
+            }
+
+            let c = Math.floor((x - offset) / beadWidth);
+
+            r = Math.max(0, Math.min(rows - 1, r));
+            c = Math.max(0, Math.min(cols - 1, c));
+
+            return { r, c };
+        }
+
+        function floodFill(startR, startC, targetColor, replacement) {
+            const targetId = targetColor ? targetColor.id : null;
+            const replacementId = replacement ? replacement.id : null;
+
+            if (targetId === replacementId) return;
+
+            const queue = [{ r: startR, c: startC }];
+            const visited = Array(rows).fill(false).map(() => Array(cols).fill(false));
+
+            while (queue.length > 0) {
+                const { r, c } = queue.pop();
+
+                if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
+                if (visited[r][c]) continue;
+                visited[r][c] = true;
+
+                const currentBead = grid[r][c];
+                const currentId = currentBead ? currentBead.id : null;
+
+                if (currentId === targetId) {
+                    grid[r][c] = replacement;
+                    queue.push({ r: r + 1, c });
+                    queue.push({ r: r - 1, c });
+                    queue.push({ r, c: c + 1 });
+                    queue.push({ r, c: c - 1 });
+                }
+            }
+        }
+
+        function handlePointerDown(e) {
+            isDrawing = true;
+            const coords = getCanvasCoords(e);
+
+            if (currentTool === 'pencil') {
+                grid[coords.r][coords.c] = selectedColor;
+            } else if (currentTool === 'eraser') {
+                grid[coords.r][coords.c] = null;
+            } else if (currentTool === 'bucket') {
+                const targetBead = grid[coords.r][coords.c];
+                floodFill(coords.r, coords.c, targetBead, selectedColor);
+            } else if (currentTool === 'select') {
+                selectionStart = coords;
+                selectionEnd = coords;
+            } else if (currentTool === 'paste') {
+                pasteClipboard(coords.r, coords.c);
+                currentTool = 'pencil';
+                setTool('pencil');
+            }
+
+            draw();
+            updateCalculations();
+        }
+
+        function handlePointerMove(e) {
+            if (!isDrawing) return;
+            const coords = getCanvasCoords(e);
+
+            if (currentTool === 'select') {
+                selectionEnd = coords;
+            } else if (currentTool === 'pencil') {
+                grid[coords.r][coords.c] = selectedColor;
+            } else if (currentTool === 'eraser') {
+                grid[coords.r][coords.c] = null;
+            }
+            draw();
+            updateCalculations();
         }
 
         function handlePointerUp() {
